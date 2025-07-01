@@ -60,7 +60,7 @@ export const WrapperContext = createContext<{
 
 export const useWrapperContext = () => useContext(WrapperContext);
 
-const allowedPaths = ["/register", "/login", "/404"];
+const allowedPaths = ["/register", "/login", "/404", "/"];
 
 const isAllowed = (path: string) => {
   if (!path) {
