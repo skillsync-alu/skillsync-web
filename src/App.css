@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --main_color: #3498db;
+  --main_color_weak: #a1b4d427;
+  --card_bg: #f1f1f1;
+  --body_bg: #ffffff;
+  --text_color: #111111;
+  --text_color_weak: #6c6c6c;
+  --lines_color: #e5e5e5d4;
+  --red: #ff0000;
+  --red_weak: #ff000017;
+  --green: #008000;
+  --green_weak: #00800017;
+}
+
+body {
+  color-scheme: light dark;
+  background-color: var(--body_bg);
+  color: var(--text_color);
+}
+
 * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
   font-family: "Inter", sans-serif !important;
+}
+
+.YoungSerif {
+  font-family: "Young Serif", serif !important;
 }
