@@ -15,8 +15,8 @@ function HeroSection() {
         opportunities
       </p>
       <div className="w-full flex items-center justify-center py-6 gap-4 max-md:flex-col">
-        <Link to="/" className="min-w-[170px] max-md:min-w-full bg-main text-white px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105">find tutor</Link>
-        <Link to="/register" className="min-w-[170px] max-md:min-w-full bg-lines px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105">become a tutor</Link>
+        <Link to="/" className="min-w-[170px] max-md:min-w-full bg-main text-white px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105">Find Tutor</Link>
+        <Link to="/register" className="min-w-[170px] max-md:min-w-full bg-lines px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105">Become a Tutor</Link>
       </div>
     </div>
   );

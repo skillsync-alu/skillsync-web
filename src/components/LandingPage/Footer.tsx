@@ -29,7 +29,7 @@ function Footer() {
               <h1 className="font-bold text-base mb-1">Quick Links</h1>
               {[
                 { label: "Home", path: "/" },
-                { label: "Mission", path: "#misson" },
+                { label: "Mission", path: "#mission" },
                 { label: "Find Tutors", path: "#tutors" },
                 { label: "FAQs", path: "#faq" },
               ].map((link, index) => (
