@@ -5,7 +5,7 @@ import { LuArrowRight, LuSchool } from "react-icons/lu";
 import { Link } from "@tanstack/react-router";
 import { FcGoogle } from "react-icons/fc";
 
-const Login = () => {
+const Register = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen overflow-y-auto relative">
       <img src={Logo} className="size-[400px] absolute bottom-0 left-0 max-2xl:-bottom-20 max-2xl:-left-20 saturate-0 opacity-[.03] pointer-events-none select-none " />
@@ -17,7 +17,7 @@ const Login = () => {
         </Link>
 
         <div className="w-full flex-1 py-[50px] flex flex-col items-start justify-center max-w-[400px] mx-auto">
-          <h1 className="text-xl font-medium text-center w-full mb-1">Login</h1>
+          <h1 className="text-xl font-medium text-center w-full mb-1">Register</h1>
 
           <button className="ring-1 ring-lines shadow-md shadow-stone-200 active:scale-[0.98] transition-all text-textWeak select-none text-sm font-medium px-3 py-3 w-full flex items-center justify-center gap-2 mt-5 rounded-2xl">
             <FcGoogle className="text-2xl" />
@@ -32,4 +32,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
