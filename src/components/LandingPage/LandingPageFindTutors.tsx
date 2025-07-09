@@ -8,7 +8,7 @@ function LandingPageFindTutors() {
         <div className="w-full h-full max-h-[650px] py-10 flex flex-col">
           <h1 className="text-sm mb-0 text-text-color-black/80">TUTORS</h1>
           <h1 className="text-5xl max-md:text-3xl leading-tight font-medium YoungSerif my-6 text-text-color-black/85">
-            Find Perfect <br /> Tutor for you <br /> Journey
+            Find the Perfect <br /> Tutor for Your <br /> Journey
           </h1>
           <h1 className="mb-0 font-normal text-lg max-w-[480px] max-lg:max-w-full text-text-color-black/80">
             Discover skilled professionals ready to guide your learning journey.
