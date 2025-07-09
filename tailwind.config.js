@@ -7,6 +7,7 @@ export default {
         main: "var(--main_color)",
         mainWeak: "var(--main_color_weak)",
         cardBg: "var(--card_bg)",
+        cardBgWeak: "var(--card_bg_weak)",
         bodyBg: "var(--body_bg)",
         text: "var(--text_color)",
         textWeak: "var(--text_color_weak)",

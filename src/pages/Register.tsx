@@ -19,7 +19,7 @@ const Register = () => {
         <div className="w-full flex-1 py-[50px] flex flex-col items-start justify-center max-w-[400px] mx-auto">
           <h1 className="text-xl font-medium text-center w-full mb-1">Register</h1>
 
-          <button className="ring-1 ring-lines shadow-md shadow-stone-200 active:scale-[0.98] transition-all text-textWeak select-none text-sm font-medium px-3 py-3 w-full flex items-center justify-center gap-2 mt-5 rounded-2xl">
+          <button className="ring-1 ring-lines shadow-md dark:shadow-none dark:bg-cardBgWeak dark:hover:bg-cardBg shadow-stone-200 active:scale-[0.98] transition-all text-text select-none text-sm font-medium px-3 py-3 w-full flex items-center justify-center gap-2 mt-5 rounded-2xl">
             <FcGoogle className="text-2xl" />
             Continue with Google
           </button>

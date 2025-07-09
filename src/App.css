@@ -6,6 +6,7 @@
   --main_color: #3498db;
   --main_color_weak: #a1b4d427;
   --card_bg: #f1f1f1;
+  --card_bg_weak: #f1f1f1a2;
   --body_bg: #ffffff;
   --text_color: #111111;
   --text_color_weak: #6c6c6c;
@@ -14,6 +15,23 @@
   --red_weak: #ff000017;
   --green: #008000;
   --green_weak: #00800017;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main_color: #3498db;
+    --main_color_weak: #8c9ab327;
+    --card_bg: #2f3a57;
+    --card_bg_weak: #2f3a57a2;
+    --body_bg: #232b41;
+    --text_color: #f3f3f5;
+    --text_color_weak: #dadadac2;
+    --lines_color: #3a4668;
+    --red: #ed7878;
+    --red_weak: #d371712f;
+    --green: #73bd73;
+    --green_weak: #74c57427;
+  }
 }
 
 body {
@@ -31,4 +49,8 @@ body {
 
 .YoungSerif {
   font-family: "Young Serif", serif !important;
+}
+
+button, a, img{
+  user-select: none;
 }
