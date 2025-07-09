@@ -12,8 +12,8 @@ function scrollToSection(id: string) {
 function LandingPageNavbar({ isScrolled }: { isScrolled?: boolean }) {
   return (
     <nav
-      className={`w-full h-fit px-10 max-lg:px-5 py-3.5 bg-white border-lines transition-shadow duration-300 sticky top-0 z-50 ${
-        isScrolled ? "shadow-sm" : ""
+      className={`w-full h-fit px-10 max-lg:px-5 py-3.5 bg-bodyBg border-lines transition-shadow duration-300 sticky top-0 z-50 ${
+        isScrolled ? "border-b" : ""
       }`}
     >
       <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between">

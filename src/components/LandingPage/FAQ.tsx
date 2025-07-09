@@ -49,7 +49,7 @@ function FAQ() {
         {Questions.map((item, index) => (
           <div
             key={index}
-            className=" py-4 max-md:px-0 max-lg:px-0 bg-transparent border-b w-full flex justify-between items-start gap-5"
+            className=" py-4 max-md:px-0 max-lg:px-0 bg-transparent border-b border-lines w-full flex justify-between items-start gap-5"
           >
             <div className="flex flex-col items-start justify-start">
               <h1
