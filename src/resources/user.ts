@@ -1,12 +1,9 @@
 import { atom } from "recoil";
 import { Currency } from "../interfaces";
 import implementPersist from "../utilities/implement-persist";
+import { UserType, type User } from "../interfaces/user";
 
-// #TODO: change this to the correct type
-type User = any;
-
-// export const defaultUser: User = {
-export const defaultUser = {
+export const defaultUser: User = {
   currency: Currency.NGN,
   email: "",
   firstName: "",
@@ -14,7 +11,7 @@ export const defaultUser = {
   isDeleted: false,
   lastName: "",
   phoneCode: "RW",
-  // type: UserType.User,
+  type: UserType.User,
   username: "",
   avatar: "",
 };
