@@ -1,15 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import React, { useState } from "react";
 import { Logo } from "../assets";
-import {
-  HiOutlineHome,
-  HiOutlineUser,
-  HiOutlinePuzzlePiece,
-  HiMiniUserGroup,
-  HiHome,
-  HiHandThumbUp,
-} from "react-icons/hi2";
+import { HiMiniUserGroup, HiHome, HiHandThumbUp } from "react-icons/hi2";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
+import { useRecoilState } from "recoil";
+import { userState } from "../resources/user";
+import { getFullName } from "../utilities/names";
 
 const navLinks = [
   {
@@ -32,6 +28,7 @@ const navLinks = [
 function Navbar() {
   const { pathname } = useLocation();
   const [showMoblieMenu, setShowMobileMenu] = useState(false);
+  const [user] = useRecoilState(userState);
 
   const linkBaseClasses =
     "font-normal text-sm transition-colors flex items-center gap-2 py-4 px-2 max-lg:px-6 relative h-full max-lg:w-full h-[50px]";
@@ -46,7 +43,10 @@ function Navbar() {
         {/* Navigation Links */}
         <div className=" flex-1 flex items-center gap-6 max-lg:gap-0 h-full">
           {/* menu button */}
-          <button onClick={() => setShowMobileMenu(!showMoblieMenu)} className="text-sm w-fit min-w-9 rounded-2xl transition text-center hidden max-lg:flex items-center justify-center gap-2 group ">
+          <button
+            onClick={() => setShowMobileMenu(!showMoblieMenu)}
+            className="text-sm w-fit min-w-9 rounded-2xl transition text-center hidden max-lg:flex items-center justify-center gap-2 group "
+          >
             <HiOutlineMenuAlt2 className="text-[28px] text-textWeak transition" />
           </button>
           <div className="w-fit flex max-lg:w-full items-center justify-center">
@@ -91,13 +91,20 @@ function Navbar() {
           >
             <div className="size-9 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center">
               <img
-                src="https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg"
-                alt=""
+                src={user.avatar}
+                alt={getFullName(user)}
+                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                  // @ts-ignore
+                  e.target.onerror = null;
+                  // @ts-ignore
+                  e.target.src =
+                    "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg";
+                }}
               />
             </div>
             <div className="flex items-start justify-center flex-col max-lg:hidden">
-              <p>James Smith</p>
-              <p className="text-xs text-textWeak">jamesSmith@gmail.com</p>
+              <p>{getFullName(user)}</p>
+              <p className="text-xs text-textWeak">{user.email}</p>
             </div>
           </Link>
         </div>

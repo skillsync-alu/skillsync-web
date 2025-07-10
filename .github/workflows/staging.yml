@@ -8,6 +8,7 @@ name: "Deploy to Staging. \U0001F681"
       - staging
 env:
   VITE_ENVIRONMENT: "staging"
+  VITE_API_URL: "https://skillsync-api-etnv.onrender.com"
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest

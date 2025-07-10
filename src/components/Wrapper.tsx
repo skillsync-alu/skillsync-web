@@ -17,9 +17,13 @@ import {
   UnAuthorizedSessionState,
   userState,
 } from "../resources/user";
-//   import { GET_USER, GetUserInput, GetUserResponse } from "../api/queries/user";
-//   import { useLazyQuery, useMutation } from "@apollo/client";
-//   import { User, UserType } from "../interfaces/user";
+import {
+  GET_USER,
+  type GetUserInput,
+  type GetUserResponse,
+} from "../api/queries/user";
+import { useLazyQuery } from "@apollo/client";
+import { type User, UserType } from "../interfaces/user";
 import {
   handleErrorMessage,
   handleResponseErrors,
@@ -27,18 +31,9 @@ import {
 import { type CountryCode } from "libphonenumber-js";
 import { currencyCountries } from "../constants";
 import { getRandomColor } from "../utilities/random-colour";
-//   import toast from "react-hot-toast";
-//   import { removePersistentState } from "../utilities/implement-persist";
-//   import { getFullName } from "../utilities/names";
-
-// #TODO: change this to the correct type
-type User = any;
-
-// #TODO: change this to the correct type
-enum UserType {
-  User = "user",
-  Tutor = "tutor",
-}
+// import toast from "react-hot-toast";
+// import { removePersistentState } from "../utilities/implement-persist";
+// import { getFullName } from "../utilities/names";
 
 export const WrapperContext = createContext<{
   isUser: boolean;
@@ -60,15 +55,7 @@ export const WrapperContext = createContext<{
 
 export const useWrapperContext = () => useContext(WrapperContext);
 
-const allowedPaths = [
-  "/register",
-  "/login",
-  "/404",
-  "/",
-
-  // these are temporary for development
-  "/dashboard",
-];
+const allowedPaths = ["/register", "/login", "/404", "/"];
 
 const isAllowed = (path: string) => {
   if (!path) {
@@ -77,7 +64,7 @@ const isAllowed = (path: string) => {
 
   return (
     allowedPaths.includes(path) ||
-    allowedPaths.some((allowedPath) => path.startsWith(allowedPath))
+    allowedPaths.some(allowedPath => path.startsWith(allowedPath))
   );
 };
 
@@ -96,7 +83,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const resetPath = useResetRecoilState(UnAuthorizedSessionState);
 
-  // const [getUser] = useLazyQuery<GetUserResponse, GetUserInput>(GET_USER);
+  const [getUser] = useLazyQuery<GetUserResponse, GetUserInput>(GET_USER);
 
   const token = Cookies.get(config.keys.access);
 
@@ -148,10 +135,11 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleGetUser = async (inputToken?: string): Promise<User | null> => {
     try {
-      // const response = await getUser({
-      //   context: { headers: { Authorization: `Bearer ${inputToken || token}` } }
-      // });
-      const response = {} as any;
+      const response = await getUser({
+        context: {
+          headers: { Authorization: `Bearer ${inputToken || token}` },
+        },
+      });
 
       if (response.error) {
         handleResponseErrors(response);
@@ -199,7 +187,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
       navigate({ to: newpath });
     } else {
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     }
   };
 

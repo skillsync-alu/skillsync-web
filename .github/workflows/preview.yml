@@ -5,6 +5,7 @@ name: "Deploy to Preview. \U0001F6A2"
 "on": pull_request
 env:
   VITE_ENVIRONMENT: "staging"
+  VITE_API_URL: "https://skillsync-api-etnv.onrender.com"
 permissions:
   checks: write
   contents: read

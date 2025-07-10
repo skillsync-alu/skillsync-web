@@ -1,7 +1,6 @@
-// import { User } from "../interfaces/user";
+import type { User } from "../interfaces/user";
 
-// export const getFullName = (user: User) => {
-export const getFullName = (user: any) => {
+export const getFullName = (user: User) => {
   if (!user || (!user.firstName && !user.lastName)) {
     return "";
   }
