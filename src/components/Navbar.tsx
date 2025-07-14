@@ -86,7 +86,7 @@ function Navbar() {
         {/* profile */}
         <div className="flex items-center space-x-6 h-full">
           <Link
-            to="/"
+            to="/profile"
             className={`text-sm flex items-center justify-start gap-3 hover:bg-cardBg h-full py-2 px-4 max-lg:px-0 max-lg:hover:bg-transparent`}
           >
             <div className="size-9 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center">
