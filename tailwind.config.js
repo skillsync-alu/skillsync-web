@@ -6,6 +6,7 @@ export default {
       colors: {
         main: "var(--main_color)",
         mainWeak: "var(--main_color_weak)",
+        mainWeak2: "var(--main_color_weak2)",
         cardBg: "var(--card_bg)",
         cardBgWeak: "var(--card_bg_weak)",
         bodyBg: "var(--body_bg)",

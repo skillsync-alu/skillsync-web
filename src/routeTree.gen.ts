@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Set_skillsRouteImport } from './routes/set_skills'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as Find_tutorsRouteImport } from './routes/find_tutors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
+const Set_skillsRoute = Set_skillsRouteImport.update({
+  id: '/set_skills',
+  path: '/set_skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -46,14 +58,18 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/set_skills': typeof Set_skillsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/set_skills': typeof Set_skillsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +77,38 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/set_skills': typeof Set_skillsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/find_tutors' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/find_tutors'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/set_skills'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/find_tutors' | '/login' | '/register'
-  id: '__root__' | '/' | '/dashboard' | '/find_tutors' | '/login' | '/register'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/find_tutors'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/set_skills'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/find_tutors'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/set_skills'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,16 +116,32 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   Find_tutorsRoute: typeof Find_tutorsRoute
   LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
+  Set_skillsRoute: typeof Set_skillsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/set_skills': {
+      id: '/set_skills'
+      path: '/set_skills'
+      fullPath: '/set_skills'
+      preLoaderRoute: typeof Set_skillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -124,7 +180,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   Find_tutorsRoute: Find_tutorsRoute,
   LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
+  Set_skillsRoute: Set_skillsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
