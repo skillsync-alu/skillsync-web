@@ -33,9 +33,23 @@ export interface User extends Document {
 
   referredBy?: User;
 
+  skillsOfferred: string[];
+
+  skillsWanted: string[];
+
   type: UserType;
 
   isDeleted: boolean;
 
-  isFollowing?: boolean;
+  matcherCount?: number;
+
+  matcheeCount?: number;
+
+  starrerCount?: number;
+
+  starredCount?: number;
+
+  isStarred?: boolean;
+
+  isMatched?: boolean;
 }

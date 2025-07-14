@@ -10,6 +10,9 @@ export const config = {
   isStaging,
   isProduction,
   isDevelopment,
+  colors: {
+    primary: "#3498db",
+  },
   google: {
     clientId:
       "878713143490-mp0bgai23nnma7fved364ghfl5ib2pjm.apps.googleusercontent.com",
