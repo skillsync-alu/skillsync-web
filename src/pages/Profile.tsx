@@ -1,39 +1,94 @@
-import React, { useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import Navbar from "../components/Navbar";
-import { GoodNewsDark, GoodNewsLight } from "../assets";
+// import { GoodNewsDark, GoodNewsLight } from "../assets";
 import { Link } from "@tanstack/react-router";
-import { LuX } from "react-icons/lu";
-import WelcomeCard from "../components/WelcomeCard";
-import StarredTutors from "../components/StarredTutors";
-import RecommendedTutors from "../components/RecommendedTutors";
-import ProfileModal from "../components/ProfileModal";
-import { TbEdit, TbEditCircle, TbInfoCircle, TbPencil } from "react-icons/tb";
+// import { LuX } from "react-icons/lu";
+// import WelcomeCard from "../components/WelcomeCard";
+// import StarredTutors from "../components/StarredTutors";
+// import RecommendedTutors from "../components/RecommendedTutors";
+// import ProfileModal from "../components/ProfileModal";
+// import { TbEdit, TbEditCircle, TbInfoCircle, TbPencil } from "react-icons/tb";
+import { TbPencil } from "react-icons/tb";
 import { RiEarthLine, RiInformationLine } from "react-icons/ri";
+import { useRecoilState } from "recoil";
+import { userState } from "../resources/user";
+import { getFullName } from "../utilities/names";
+import { UserType } from "../interfaces/user";
+import dayjs from "dayjs";
+import { useMutation } from "@apollo/client";
+import {
+  UPDATE_USER,
+  type UpdateUserInput,
+  type UpdateUserResponse,
+} from "../api/mutations/user";
+import { useFormik } from "formik";
+import {
+  handleErrorMessage,
+  handleResponseErrors,
+} from "../utilities/error-handling";
+import Spinner from "../components/Spinner";
+import { useWrapperContext } from "../components/Wrapper";
+import { countries } from "../constants";
 
 function Profile() {
+  const { isTutor } = useWrapperContext();
+
+  const [user, setUser] = useRecoilState(userState);
+
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleInput = () => {
     const textarea = textareaRef.current;
+
     if (textarea) {
       textarea.style.height = "auto"; // Reset the height
       textarea.style.height = `${textarea.scrollHeight}px`; // Set new height
     }
   };
 
-  const tutor = {
-    id: 1,
-    username: "James Wilson",
-    firstName: "James",
-    lastName: "Wilson",
-    phoneCode: "+1",
-    phoneNumber: "5551234567",
-    email: "james.wilson@example.com",
-    bio: "Certified handyman with over 10 years of experience in home repairs and solar systems.",
-    avatar:
-      "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg",
-    skills: ["Plumbing", "Solar Installation", "Tile Setting", "HVAC Repair"],
-  };
+  const skills = useMemo(() => {
+    if (user.type === UserType.Tutor) {
+      return user.skillsOfferred;
+    }
+
+    return user.skillsWanted;
+  }, []);
+
+  const initialValues = useMemo(() => {
+    if (!user || !user.id) {
+      return { bio: "", phoneNumber: "" };
+    }
+
+    return { bio: user?.bio || "", phoneNumber: user?.phoneNumber || "" };
+  }, [user]);
+
+  const form = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: async input => {
+      try {
+        const response = await updateUser({ variables: { input } });
+
+        if (response.errors) {
+          return handleResponseErrors(response);
+        }
+
+        if (!response.data?.updateUser) {
+          return;
+        }
+
+        setUser(response.data.updateUser);
+      } catch (error) {
+        handleErrorMessage(error);
+      }
+    },
+  });
+
+  const [updateUser, updateUserResult] = useMutation<
+    UpdateUserResponse,
+    UpdateUserInput
+  >(UPDATE_USER);
+
   return (
     <div>
       <Navbar />
@@ -45,7 +100,7 @@ function Profile() {
             <div className="w-full flex bg-bodyBg ring-1 ring-lines rounded-xl flex-col gap-4 min-h-32 p-5">
               <div className="size-36 max-md:size-28 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center mx-2 mt-2">
                 <img
-                  src={tutor.avatar}
+                  src={user.avatar}
                   alt=""
                   className="w-full h-full object-cover"
                 />
@@ -53,10 +108,10 @@ function Profile() {
 
               <div className="flex flex-1 items-start justify-center flex-col">
                 <p className="text-2xl max-lg:text-xl font-semibold break-all line-clamp-1 px-2">
-                  {tutor.username || "Unknown Tutor"}
+                  {getFullName(user) || "Unknown Tutor"}
                 </p>
                 <p className="text-sm break-all line-clamp-1 text-textWeak px-2">
-                  {tutor.email || ""}
+                  {user.email}
                 </p>
                 <div className="flex items-start justify-between w-full px-2 pb-3 border-t border-lines mt-10 pt-4">
                   <p className="pb-2 text-base text-text">
@@ -72,33 +127,49 @@ function Profile() {
                       placeholder="Enter short desciption about yourself.."
                       className="bg-cardBg resize-none h-[44px] max-h-[200px] px-5 py-3 rounded-2xl text-sm outline-none overflow-y-auto"
                       rows={1}
+                      value={form.values.bio}
+                      onChange={form.handleChange}
+                      name="bio"
                     />
                   </div>
                   <div className="w-full flex flex-col">
                     <p className="pb-2 text-sm text-textWeak">Phone number</p>
                     <input
                       type="text"
-                      placeholder="Phone number"
+                      placeholder="0788 123 456"
                       className="bg-cardBg h-[44px] px-5 py-3 rounded-2xl text-sm outline-none "
+                      value={form.values.phoneNumber}
+                      onChange={form.handleChange}
+                      name="phoneNumber"
                     />
                   </div>
-                  <button className="bg-main text-white w-fit px-4 py-2.5 rounded-xl text-sm flex items-center gap-1">
-                    Save Changes
+                  <button
+                    onClick={() => form.handleSubmit()}
+                    className="bg-main text-white w-fit px-4 py-2.5 rounded-xl text-sm flex items-center gap-1"
+                  >
+                    {updateUserResult.loading ? (
+                      <Spinner message="Saving" />
+                    ) : (
+                      "Save Changes"
+                    )}
                   </button>
                 </div>
                 <div className="flex items-start justify-between w-full px-2 pb-3 border-t border-lines mt-10 pt-4">
                   <p className="pb-2 text-base text-text">
-                    Skills you want to Learn{" "}
+                    Skills you want to {isTutor ? "Teach" : "Learn"}{" "}
                   </p>
                   <div className="w-fit flex gap-5">
-                    <Link to='/set_skills' className="text-main text-sm whitespace-nowrap flex items-center gap-1">
+                    <Link
+                      to="/set_skills"
+                      className="text-main text-sm whitespace-nowrap flex items-center gap-1"
+                    >
                       <TbPencil className="text-lg" />
-                      Edit Skills
+                      {Boolean(skills.length) ? "Edit" : "Add"} Skills
                     </Link>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2  px-2">
-                  {tutor.skills.map((skill, index) => (
+                  {skills.map((skill, index) => (
                     <div
                       key={index}
                       className="text-sm font-medium py-1.5 px-3 rounded-2xl bg-lines dark:bg-mainWeak "
@@ -109,11 +180,15 @@ function Profile() {
                 </div>
                 <div className="flex flex-col gap-2  w-full px-2 pb-3 mt-12 pt-4">
                   <p className="pb-2 text-sm text-textWeak flex items-center gap-2 ">
-                    <RiEarthLine className="text-xl " /> Rwanda
+                    <RiEarthLine className="text-xl " />{" "}
+                    {countries.find(country => country.iso === user.phoneCode)
+                      ?.country || "Rwanda"}
                   </p>
                   <p className="pb-2 text-sm text-textWeak flex items-center gap-2 ">
-                    <RiInformationLine className="text-xl " /> Joined Dec 23,
-                    2022
+                    <RiInformationLine className="text-xl " /> Joined{" "}
+                    {dayjs(user.createdAt || new Date()).format(
+                      "MMMM DD, YYYY"
+                    )}
                   </p>
                 </div>
               </div>

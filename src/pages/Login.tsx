@@ -83,7 +83,7 @@ const Login = () => {
             }
             return login();
           }}
-          className="mt-2 w-full text-black flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-base ring-1 ring-lines bg-white text-text shadow-sm hover:bg-main hover:text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="mt-2 w-full text-black flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-base ring-1 ring-lines bg-white shadow-sm hover:bg-main hover:text-white transition-all duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
           disabled={loginUserResult.loading}
         >
           <FcGoogle className="text-2xl" />

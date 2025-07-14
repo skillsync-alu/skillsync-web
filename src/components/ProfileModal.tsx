@@ -1,36 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Tutors } from "./dummy_data";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiXMark } from "react-icons/hi2";
-
-type User = {
-  id: number;
-  username: string;
-  firstName: string;
-  lastName: string;
-  phoneCode: string;
-  phoneNumber: string;
-  email: string;
-  bio: string;
-  avatar: string;
-  skills: string[];
-};
+import type { User } from "../interfaces/user";
+import { getFullName } from "../utilities/names";
+import { shortNumber } from "../utilities/short-number";
+import { countries } from "../constants";
 
 type ProfileModalProps = {
-  id: number | null;
   setShowProfileModal: (val: boolean) => void;
+  user?: User;
 };
 
-function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isVisible, setIsVisible] = useState(true);
+function ProfileModal({ setShowProfileModal, user }: ProfileModalProps) {
+  if (!user) return null;
 
-  useEffect(() => {
-    if (id !== null) {
-      const foundUser = Tutors.find((tutor) => tutor.id === id) || null;
-      setUser(foundUser);
-    }
-  }, [id]);
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -39,8 +23,6 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
   const handleExitComplete = () => {
     setShowProfileModal(false);
   };
-
-  if (!user) return null;
 
   return (
     <AnimatePresence onExitComplete={handleExitComplete}>
@@ -82,6 +64,15 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
                 <img
                   src={user?.avatar}
                   alt=""
+                  onError={(
+                    e: React.SyntheticEvent<HTMLImageElement, Event>
+                  ) => {
+                    // @ts-ignore
+                    e.target.onerror = null;
+                    // @ts-ignore
+                    e.target.src =
+                      "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg";
+                  }}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -89,7 +80,7 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
             <div className="w-full flex max-md:flex-col pb-10">
               <div className="flex-1 px-9 pt-4 mt-16">
                 <p className="text-2xl font-semibold text-text">
-                  {user?.username}
+                  {getFullName(user)}
                 </p>
                 <p className="text-sm font-normal text-textWeak">
                   {user?.email}
@@ -97,11 +88,15 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
                 {/* stats */}
                 <div className="w-full flex items-center flex-wrap my-6 gap-4">
                   <div className="flex max-sm:w-full flex-col items-center gap-1 justify-center bg-cardBgWeak ring-1 ring-cardBg py-3 px-4 rounded-xl min-w-[140px]">
-                    <p className="text-2xl font-semibold">1,213</p>
+                    <p className="text-2xl font-semibold">
+                      {shortNumber(user?.matcheeCount || 0)}
+                    </p>
                     <p className="text-xs text-textWeak">Total Matches</p>
                   </div>
                   <div className="flex max-sm:w-full flex-col items-center gap-1 justify-center bg-cardBgWeak ring-1 ring-cardBg py-3 px-4 rounded-xl min-w-[140px]">
-                    <p className="text-2xl font-semibold">12</p>
+                    <p className="text-2xl font-semibold">
+                      {shortNumber(user?.starrerCount || 0)}
+                    </p>
                     <p className="text-xs text-textWeak">Total Stars</p>
                   </div>
                 </div>
@@ -115,13 +110,16 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
                 {/* location */}
                 <div className="w-full flex flex-col gap-2 mt-7 max-w-[430px]">
                   <p>Country of residence</p>
-                  <p className="text-sm font-normal text-textWeak">Rwanda</p>
+                  <p className="text-sm font-normal text-textWeak">
+                    {countries.find(country => country.iso === user.phoneCode)
+                      ?.country || "Rwanda"}
+                  </p>
                 </div>
                 {/* skills */}
                 <div className="w-full flex flex-col gap-2 mt-7 max-w-[430px]">
                   <p>Skills</p>
                   <div className="flex flex-wrap gap-2">
-                    {user?.skills.map((skill, index) => (
+                    {user?.skillsOfferred.map((skill, index) => (
                       <div
                         key={index}
                         className="text-xs py-1.5 px-3 rounded-2xl bg-cardBgWeak dark:bg-mainWeak "
@@ -133,11 +131,18 @@ function ProfileModal({ id, setShowProfileModal }: ProfileModalProps) {
                 </div>
               </div>
               <div className="min-w-fit pr-32 max-md:pr-0 max-md:px-9 ">
-                {/* Phone */}
-                <div className="w-full flex flex-col gap-2 mt-7 max-w-[430px]">
-                  <p>Contact</p>
-                  <p className="text-sm font-normal text-textWeak">({user?.phoneCode}) {user?.phoneNumber}</p>
-                </div>
+                {/* Should not show, should only show on a successful match */}
+                {/* {user.phoneNumber && (
+                  <div className="w-full flex flex-col gap-2 mt-7 max-w-[430px]">
+                    <p>Contact</p>
+                    <p className="text-sm font-normal text-textWeak">
+                      {parsePhoneNumberFromString(
+                        user.phoneNumber,
+                        user.phoneCode || "RW"
+                      )?.formatInternational({ v2: true })}
+                    </p>
+                  </div>
+                )} */}
               </div>
             </div>
           </motion.div>

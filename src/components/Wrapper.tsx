@@ -55,7 +55,9 @@ export const WrapperContext = createContext<{
 
 export const useWrapperContext = () => useContext(WrapperContext);
 
-const allowedPaths = ["/register", "/login", "/404", "/"];
+const paths = ["/register", "/login", "/404"];
+
+const allowedPaths = ["/"].concat(paths);
 
 const isAllowed = (path: string) => {
   if (!path) {
@@ -64,7 +66,7 @@ const isAllowed = (path: string) => {
 
   return (
     allowedPaths.includes(path) ||
-    allowedPaths.some(allowedPath => path.startsWith(allowedPath))
+    paths.some(allowedPath => path.startsWith(allowedPath))
   );
 };
 
