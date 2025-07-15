@@ -19,7 +19,7 @@ const navLinks = [
     icon: HiMiniUserGroup,
   },
   {
-    to: "/",
+    to: "/my_matches",
     label: "My Matches",
     icon: HiHandThumbUp,
   },

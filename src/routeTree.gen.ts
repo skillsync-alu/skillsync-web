@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as Set_skillsRouteImport } from './routes/set_skills'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as My_matchesRouteImport } from './routes/my_matches'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as Find_tutorsRouteImport } from './routes/find_tutors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -30,6 +31,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const My_matchesRoute = My_matchesRouteImport.update({
+  id: '/my_matches',
+  path: '/my_matches',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/my_matches': typeof My_matchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/set_skills': typeof Set_skillsRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/my_matches': typeof My_matchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/set_skills': typeof Set_skillsRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/find_tutors': typeof Find_tutorsRoute
   '/login': typeof LoginRoute
+  '/my_matches': typeof My_matchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/set_skills': typeof Set_skillsRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/find_tutors'
     | '/login'
+    | '/my_matches'
     | '/profile'
     | '/register'
     | '/set_skills'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/find_tutors'
     | '/login'
+    | '/my_matches'
     | '/profile'
     | '/register'
     | '/set_skills'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/find_tutors'
     | '/login'
+    | '/my_matches'
     | '/profile'
     | '/register'
     | '/set_skills'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   Find_tutorsRoute: typeof Find_tutorsRoute
   LoginRoute: typeof LoginRoute
+  My_matchesRoute: typeof My_matchesRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   Set_skillsRoute: typeof Set_skillsRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my_matches': {
+      id: '/my_matches'
+      path: '/my_matches'
+      fullPath: '/my_matches'
+      preLoaderRoute: typeof My_matchesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   Find_tutorsRoute: Find_tutorsRoute,
   LoginRoute: LoginRoute,
+  My_matchesRoute: My_matchesRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   Set_skillsRoute: Set_skillsRoute,
