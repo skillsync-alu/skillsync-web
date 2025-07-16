@@ -1,11 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Logo } from "../assets";
 import { HiMiniUserGroup, HiHome, HiHandThumbUp } from "react-icons/hi2";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { useRecoilState } from "recoil";
 import { userState } from "../resources/user";
 import { getFullName } from "../utilities/names";
+import UserAvatar from "./UserAvatar";
 
 const navLinks = [
   {
@@ -90,17 +91,7 @@ function Navbar() {
             className={`text-sm flex items-center justify-start gap-3 hover:bg-cardBg h-full py-2 px-4 max-lg:px-0 max-lg:hover:bg-transparent`}
           >
             <div className="size-9 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center">
-              <img
-                src={user.avatar}
-                alt={getFullName(user)}
-                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                  // @ts-ignore
-                  e.target.onerror = null;
-                  // @ts-ignore
-                  e.target.src =
-                    "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg";
-                }}
-              />
+              <UserAvatar />
             </div>
             <div className="flex items-start justify-center flex-col max-lg:hidden">
               <p>{getFullName(user)}</p>

@@ -5,6 +5,8 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "./api";
 import { RecoilRoot } from "recoil";
 import { Toaster } from "react-hot-toast";
+import { ChakraProvider } from "@chakra-ui/react";
+import { chakraTheme } from "./config/chakraTheme";
 
 const router = createRouter({ routeTree, defaultViewTransition: true });
 
@@ -55,8 +57,9 @@ function App() {
             },
           }}
         />
-
-        <RouterProvider router={router} />
+        <ChakraProvider theme={chakraTheme}>
+          <RouterProvider router={router} />
+        </ChakraProvider>
       </ApolloProvider>
     </RecoilRoot>
   );

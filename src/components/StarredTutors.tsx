@@ -15,6 +15,7 @@ import {
 import { useRecoilState } from "recoil";
 import { starredTutorsListState } from "../resources/user";
 import { getFullName } from "../utilities/names";
+import UserAvatar from "./UserAvatar";
 
 function StarredTutors() {
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -104,11 +105,7 @@ function StarredTutors() {
               className={`text-sm flex flex-col items-center justify-start gap-2 hover:bg-cardBg cursor-pointer w-full p-2 rounded-xl relative`}
             >
               <div className="size-16 max-md:size-14 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center">
-                <img
-                  src={tutor.avatar}
-                  alt={getFullName(tutor)}
-                  className="w-full h-full object-cover"
-                />
+                <UserAvatar user={tutor} size={"lg"} />
               </div>
               <div className="flex flex-1 items-start justify-center flex-col">
                 <p className="text-sm break-all line-clamp-1">

@@ -30,7 +30,6 @@ import {
 } from "../utilities/error-handling";
 import { type CountryCode } from "libphonenumber-js";
 import { currencyCountries } from "../constants";
-import { getRandomColor } from "../utilities/random-colour";
 // import toast from "react-hot-toast";
 // import { removePersistentState } from "../utilities/implement-persist";
 // import { getFullName } from "../utilities/names";
@@ -153,15 +152,9 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         return null;
       }
 
-      const user = { ...response.data.getUser };
+      setUser(response.data.getUser);
 
-      if (!user.avatar) {
-        user.avatar = getRandomColor();
-      }
-
-      setUser(user);
-
-      return user;
+      return response.data.getUser;
     } catch (error) {
       handleErrorMessage(error);
 

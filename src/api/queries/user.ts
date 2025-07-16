@@ -31,6 +31,19 @@ export interface GetUserResponse {
   getUser: User;
 }
 
+export const GET_STATISTICS = gql`
+  query {
+    getStatistics {
+      matcherCount
+      matcheeCount
+    }
+  }
+`;
+
+export interface GetStatisticsResponse {
+  getStatistics: User;
+}
+
 export const GET_TUTORS = gql`
   query getTutors($filter: FilterInput!) {
     getTutors(filter: $filter) {

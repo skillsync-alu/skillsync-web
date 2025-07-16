@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { LuArrowRight } from "react-icons/lu";
 
 function FAQ() {

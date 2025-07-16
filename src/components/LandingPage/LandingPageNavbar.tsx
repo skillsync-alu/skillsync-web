@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import React from "react";
 import { Logo } from "../../assets";
 
 function scrollToSection(id: string) {

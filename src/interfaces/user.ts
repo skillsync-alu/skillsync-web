@@ -41,6 +41,8 @@ export interface User extends Document {
 
   isDeleted: boolean;
 
+  matchId?: string;
+
   matcherCount?: number;
 
   matcheeCount?: number;

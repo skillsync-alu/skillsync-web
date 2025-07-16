@@ -71,6 +71,12 @@ function SetSkills() {
   const [chosenSkills, setChosenSkills] = useState<string[]>(skills);
 
   const toggleSkill = (skill: string) => {
+    if (chosenSkills.length >= 6) {
+      if (!chosenSkills.includes(skill)) {
+        return;
+      }
+    }
+
     setChosenSkills(
       prev =>
         prev.includes(skill)
