@@ -51,8 +51,8 @@ function WelcomeCard() {
   }, []);
 
   return (
-    <div className="w-full flex bg-bodyBg ring-1 ring-lines rounded-xl min-h-32 p-5">
-      <div className="flex-1 flex flex-col min-h-full">
+    <div className="w-full flex flex-col md:flex-row bg-bodyBg ring-1 ring-lines rounded-xl min-h-32 p-5 items-center justify-between gap-4">
+      <div className="flex-1 flex flex-col min-h-full items-start justify-center">
         <h1 className="text-xl font-semibold">
           Welcome back, {user.firstName}
         </h1>
@@ -63,19 +63,21 @@ function WelcomeCard() {
           </Link>
         </div> */}
       </div>
-      <div className="w-fit">
-        {/* for light mode */}
-        <img
-          src={GoodNewsLight}
-          alt=""
-          className="h-[160px] max-md:h-32 max-sm:h-20 max-sm:hidden min-w-fit dark:hidden"
-        />
-        {/* for dark mode */}
-        <img
-          src={GoodNewsDark}
-          alt=""
-          className="h-[160px] max-md:h-32 max-sm:h-20 max-sm:hidden min-w-fit hidden dark:flex"
-        />
+      <div className="flex items-center justify-center w-full md:w-fit">
+        <div className="rounded-2xl bg-cardBgWeak p-3 flex items-center justify-center shadow-sm border border-lines w-full max-w-[180px] md:max-w-[160px]">
+          {/* for light mode */}
+          <img
+            src={GoodNewsLight}
+            alt="Welcome illustration"
+            className="w-full h-auto dark:hidden"
+          />
+          {/* for dark mode */}
+          <img
+            src={GoodNewsDark}
+            alt="Welcome illustration"
+            className="w-full h-auto hidden dark:block"
+          />
+        </div>
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ import {
 import Spinner from "../components/Spinner";
 import { useWrapperContext } from "../components/Wrapper";
 import { countries } from "../constants";
+import UserAvatar from "../components/UserAvatar";
 
 function Profile() {
   const { isTutor } = useWrapperContext();
@@ -99,11 +100,7 @@ function Profile() {
           <div className="w-full flex max-lg:flex-col gap-6">
             <div className="w-full flex bg-bodyBg ring-1 ring-lines rounded-xl flex-col gap-4 min-h-32 p-5">
               <div className="size-36 max-md:size-28 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center mx-2 mt-2">
-                <img
-                  src={user.avatar}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
+                <UserAvatar size={"2xl"} />
               </div>
 
               <div className="flex flex-1 items-start justify-center flex-col">

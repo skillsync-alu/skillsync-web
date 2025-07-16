@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { MdOutlineFilterList } from "react-icons/md";
 import { RiSearch2Line } from "react-icons/ri";
@@ -27,11 +27,24 @@ import {
   type StarResponse,
 } from "../api/mutations/star";
 import classnames from "classnames";
+import {
+  CREATE_MATCH,
+  type CreateMatchInput,
+  type CreateMatchResponse,
+} from "../api/mutations/match";
+import Dialog from "../components/Dialog";
+import Progress from "../components/Progress";
+import Spinner from "../components/Spinner";
+import UserAvatar from "../components/UserAvatar";
 
 function FindTutors() {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const [profile, setProfile] = useState<User | null>(null);
+
+  const [matcher, setMatcher] = useState("");
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [tutors, setTutors] = useRecoilState(tutorsListState);
 
@@ -47,9 +60,14 @@ function FindTutors() {
   const [getTutors, getTutorsResult] = useLazyQuery<
     GetTutorsResponse,
     GetTutorsInput
-  >(GET_TUTORS);
+  >(GET_TUTORS, { fetchPolicy: "no-cache" });
 
   const [star] = useMutation<StarResponse, StarInput>(STAR_OR_UNSTAR);
+
+  const [createMatch, createMatchResult] = useMutation<
+    CreateMatchResponse,
+    CreateMatchInput
+  >(CREATE_MATCH);
 
   const updateStar = (starred: string, isStarred: boolean) => {
     try {
@@ -90,6 +108,28 @@ function FindTutors() {
     }
   };
 
+  const handleCreateMatch = async (matcher: string) => {
+    try {
+      setIsDialogOpen(false);
+
+      const response = await createMatch({ variables: { matcher } });
+
+      if (response.errors) {
+        return handleResponseErrors(response);
+      }
+
+      if (!response.data?.createMatch) {
+        return;
+      }
+
+      await handleGetTutors({ keyword: search, page });
+
+      setMatcher("");
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
   const handleGetTutors = async (filter: FilterInput = {}) => {
     try {
       filter.take = 6;
@@ -116,6 +156,12 @@ function FindTutors() {
     handleGetTutors({ keyword: search, page });
   }, [search, page]);
 
+  useEffect(() => {
+    if (matcher) {
+      setIsDialogOpen(true);
+    }
+  }, [matcher]);
+
   return (
     <div>
       <Navbar />
@@ -126,6 +172,15 @@ function FindTutors() {
           setShowProfileModal={setShowProfileModal}
         />
       )}
+      <Dialog
+        open={isDialogOpen}
+        message="Are you sure you want to proceed?"
+        onConfirm={() => handleCreateMatch(matcher)}
+        onReject={() => {
+          setIsDialogOpen(false);
+          setMatcher("");
+        }}
+      />
       <div className="w-full flex items-center justify-between flex-col relative text-text px-10 max-lg:px-4">
         <div className="w-full h-40 bg-cardBgWeak absolute top-0 left-0"></div>
         <div className="w-full h-full max-w-[1200px] mx-auto min-h-32 z-10 pb-10 max-lg:pb-6">
@@ -197,20 +252,7 @@ function FindTutors() {
                         className="w-full h-full absolute top-0 left-0 z-10"
                       ></button>
                       <div className="size-16 max-md:size-14 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center mx-2 mt-2">
-                        <img
-                          src={tutor.avatar}
-                          alt=""
-                          onError={(
-                            e: React.SyntheticEvent<HTMLImageElement, Event>
-                          ) => {
-                            // @ts-ignore
-                            e.target.onerror = null;
-                            // @ts-ignore
-                            e.target.src =
-                              "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg";
-                          }}
-                          className="w-full h-full object-cover"
-                        />
+                        <UserAvatar user={tutor} size={"lg"} />
                       </div>
                       <div className="flex flex-1 items-start justify-center flex-col">
                         <p className="text-lg font-semibold break-all line-clamp-1 px-2">
@@ -230,9 +272,29 @@ function FindTutors() {
                           ))}
                         </div>
                         <div className="w-full flex items-center justify-center mt-6 gap-3 z-20">
-                          <button className="text-sm py-3 px-3 w-full rounded-2xl bg-lines hover:bg-main hover:text-white transition text-center flex items-center justify-center gap-2 group ">
+                          <button
+                            disabled={
+                              createMatchResult.loading || tutor.isMatched
+                            }
+                            onClick={() => {
+                              if (createMatchResult.loading) {
+                                return;
+                              }
+                              setMatcher(tutor.id);
+                            }}
+                            className="text-sm py-3 px-3 w-full rounded-2xl bg-lines hover:bg-main hover:text-white transition text-center flex items-center justify-center gap-2 group "
+                          >
                             <HiHandThumbUp className="text-xl text-textWeak group-hover:text-white transition" />
-                            <span className="mt-[2px]">Match</span>
+                            <span className="mt-[2px]">
+                              {createMatchResult.loading &&
+                              matcher === tutor.id ? (
+                                <Spinner message="Matching" />
+                              ) : tutor.isMatched ? (
+                                "Matched"
+                              ) : (
+                                "Match"
+                              )}
+                            </span>
                           </button>
                           <button
                             onClick={() =>
@@ -271,6 +333,7 @@ function FindTutors() {
           </div>
         </div>
       </div>
+      <Progress loading={createMatchResult.loading} />
     </div>
   );
 }

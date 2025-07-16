@@ -5,6 +5,7 @@ import type { User } from "../interfaces/user";
 import { getFullName } from "../utilities/names";
 import { shortNumber } from "../utilities/short-number";
 import { countries } from "../constants";
+import UserAvatar from "./UserAvatar";
 
 type ProfileModalProps = {
   setShowProfileModal: (val: boolean) => void;
@@ -61,20 +62,7 @@ function ProfileModal({ setShowProfileModal, user }: ProfileModalProps) {
               </button>
               {/* avatar */}
               <div className="size-32 ring-8 ring-bodyBg aspect-square absolute -bottom-16 left-9 min-w-fit rounded-full overflow-hidden flex items-center justify-center">
-                <img
-                  src={user?.avatar}
-                  alt=""
-                  onError={(
-                    e: React.SyntheticEvent<HTMLImageElement, Event>
-                  ) => {
-                    // @ts-ignore
-                    e.target.onerror = null;
-                    // @ts-ignore
-                    e.target.src =
-                      "https://images.generated.photos/hTWhfPc0WQUwABdQHBpgtOCTXeZ-cKtJYUQ6cQy_Bbc/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NDk4NTA5LmpwZw.jpg";
-                  }}
-                  className="w-full h-full object-cover"
-                />
+                <UserAvatar user={user} size={"2xl"} />
               </div>
             </div>
             <div className="w-full flex max-md:flex-col pb-10">

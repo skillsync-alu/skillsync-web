@@ -2,8 +2,47 @@ import Navbar from "../components/Navbar";
 import WelcomeCard from "../components/WelcomeCard";
 import StarredTutors from "../components/StarredTutors";
 import RecommendedTutors from "../components/RecommendedTutors";
+import { useLazyQuery } from "@apollo/client";
+import {
+  GET_STATISTICS,
+  type GetStatisticsResponse,
+} from "../api/queries/user";
+import {
+  handleErrorMessage,
+  handleResponseErrors,
+} from "../utilities/error-handling";
+import { useRecoilState } from "recoil";
+import { userStatisticsState } from "../resources/user";
+import { useEffect } from "react";
+import Progress from "../components/Progress";
 
 function Dashboard() {
+  const [, setStats] = useRecoilState(userStatisticsState);
+
+  const [getStatistics, getStatisticsResult] =
+    useLazyQuery<GetStatisticsResponse>(GET_STATISTICS);
+
+  const handleGetStatistics = async () => {
+    try {
+      const response = await getStatistics();
+
+      if (response.error) {
+        return handleResponseErrors(response);
+      }
+
+      if (!response.data?.getStatistics) {
+        return;
+      }
+
+      setStats(response.data.getStatistics as any);
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetStatistics();
+  }, []);
   return (
     <div>
       <Navbar />
@@ -21,6 +60,7 @@ function Dashboard() {
           <RecommendedTutors />
         </div>
       </div>
+      <Progress loading={getStatisticsResult.loading} />
     </div>
   );
 }

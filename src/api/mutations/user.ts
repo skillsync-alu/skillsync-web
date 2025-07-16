@@ -43,3 +43,13 @@ export interface UpdateUserInput {
 export interface UpdateUserResponse {
   updateUser: User;
 }
+
+export const GET_FIREBASE_CUSTOM_TOKEN = gql`
+  mutation getFirebaseCustomToken {
+    getFirebaseCustomToken
+  }
+`;
+
+export interface GetFirebaseTokenResponse {
+  getFirebaseCustomToken: string;
+}

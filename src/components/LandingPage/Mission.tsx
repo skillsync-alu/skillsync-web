@@ -1,5 +1,3 @@
-import React from "react";
-
 function Mission() {
   return (
     <div id="mission" className="w-full">

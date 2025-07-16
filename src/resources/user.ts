@@ -18,6 +18,11 @@ export const defaultUser: User = {
   skillsWanted: [],
 };
 
+export const defaultStatistics = {
+  matcheeCount: 0,
+  matcherCount: 0,
+};
+
 export const userState = atom<User>({
   key: "userState",
   default: defaultUser,
@@ -55,4 +60,9 @@ export const matchedTutorsListState = atom<PaginationResponse<User>>({
     totalPages: 1,
   },
   key: "matchedTutorsListState",
+});
+
+export const userStatisticsState = atom<typeof defaultStatistics>({
+  default: defaultStatistics,
+  key: "userStatisticsState",
 });
