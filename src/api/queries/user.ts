@@ -36,6 +36,7 @@ export const GET_STATISTICS = gql`
     getStatistics {
       matcherCount
       matcheeCount
+      starrerCount
     }
   }
 `;
@@ -62,6 +63,8 @@ export const GET_TUTORS = gql`
         skillsOfferred
         isStarred
         isMatched
+        matcheeCount
+        starrerCount
       }
     }
   }

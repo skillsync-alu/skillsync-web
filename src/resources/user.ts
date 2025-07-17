@@ -21,6 +21,7 @@ export const defaultUser: User = {
 export const defaultStatistics = {
   matcheeCount: 0,
   matcherCount: 0,
+  starrerCount: 0,
 };
 
 export const userState = atom<User>({
@@ -60,6 +61,15 @@ export const matchedTutorsListState = atom<PaginationResponse<User>>({
     totalPages: 1,
   },
   key: "matchedTutorsListState",
+});
+
+export const matchedStudentsListState = atom<PaginationResponse<User>>({
+  default: {
+    list: [],
+    totalCount: 0,
+    totalPages: 1,
+  },
+  key: "matchedStudentsListState",
 });
 
 export const userStatisticsState = atom<typeof defaultStatistics>({

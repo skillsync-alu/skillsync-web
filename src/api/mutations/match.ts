@@ -29,10 +29,20 @@ export const UPDATE_MATCH_STUDENT = gql`
   }
 `;
 
+export const UPDATE_MATCH_TUTOR = gql`
+  mutation updateMatchAsTutor($input: UpdateMatchInput!) {
+    updateMatchAsTutor(input: $input) {
+      id
+      status
+    }
+  }
+`;
+
 export interface UpdateMatchInput {
   input: { id: string; matchStatus: MatchStatusType; details?: string };
 }
 
 export interface UpdateMatchResponse {
   updateMatchAsStudent: Match;
+  updateMatchAsTutor: Match;
 }

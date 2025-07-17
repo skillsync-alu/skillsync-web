@@ -91,7 +91,7 @@ function StarredTutors() {
               You haven't starred any tutors yet.
             </p>
             <Link
-              to="/find_tutors"
+              to="/tutors"
               className="bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80"
             >
               Find Tutors
