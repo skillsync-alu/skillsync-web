@@ -1,4 +1,3 @@
-import React from "react";
 import { MdCheckCircle } from "react-icons/md";
 
 function LandingPageFindTutors() {

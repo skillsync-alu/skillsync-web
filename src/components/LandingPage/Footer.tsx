@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "@tanstack/react-router";
 import { FaMapLocation } from "react-icons/fa6";
 import { FaPhone } from "react-icons/fa6";
