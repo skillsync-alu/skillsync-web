@@ -157,7 +157,7 @@ function Profile() {
                   </p>
                   <div className="w-fit flex gap-5">
                     <Link
-                      to="/set_skills"
+                      to="/skills"
                       className="text-main text-sm whitespace-nowrap flex items-center gap-1"
                     >
                       <TbPencil className="text-lg" />

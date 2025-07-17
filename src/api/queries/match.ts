@@ -72,3 +72,31 @@ export interface GetMatchesInput {
 export interface GetMatchesResponse {
   getMatches: PaginationResponse<Match>;
 }
+
+export const GET_MATCHEES = gql`
+  query getMatchees($filter: FilterInput!) {
+    getMatchees(filter: $filter) {
+      totalPages
+      totalCount
+      list {
+        id
+        firstName
+        lastName
+        username
+        avatar
+        skillsWanted
+        isStarred
+        isMatched
+        matchId
+      }
+    }
+  }
+`;
+
+export interface GetMatcheesInput {
+  filter: FilterInput;
+}
+
+export interface GetMatcheesResponse {
+  getMatchees: PaginationResponse<User>;
+}

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { UserType } from "../../interfaces/user";
 
 function HeroSection() {
   return (
@@ -16,12 +17,14 @@ function HeroSection() {
       <div className="w-full flex items-center justify-center py-6 gap-4 max-md:flex-col">
         <Link
           to="/register"
+          search={{ userType: UserType.User }}
           className="min-w-[170px] max-md:min-w-full bg-main text-white px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105"
         >
           Find a Tutor
         </Link>
         <Link
           to="/register"
+          search={{ userType: UserType.Tutor }}
           className="min-w-[170px] max-md:min-w-full bg-lines px-5 py-3.5 text-base rounded-2xl transition-all capitalize font-medium hover:scale-105"
         >
           Become a Tutor

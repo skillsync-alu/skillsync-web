@@ -2,9 +2,9 @@ import { HiHandThumbDown, HiHandThumbUp } from "react-icons/hi2";
 import { TbReload } from "react-icons/tb";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
-  GET_MATCHERS,
-  type GetMatchersInput,
-  type GetMatchersResponse,
+  GET_MATCHEES,
+  type GetMatcheesInput,
+  type GetMatcheesResponse,
 } from "../api/queries/match";
 import {
   handleErrorMessage,
@@ -12,17 +12,15 @@ import {
 } from "../utilities/error-handling";
 import { useRecoilState } from "recoil";
 import {
-  matchedTutorsListState,
+  matchedStudentsListState,
   userState,
   userStatisticsState,
 } from "../resources/user";
 import { useEffect, useState } from "react";
-import type { User } from "../interfaces/user";
 import { getFullName } from "../utilities/names";
-import ProfileModal from "./ProfileModal";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
-  UPDATE_MATCH_STUDENT,
+  UPDATE_MATCH_TUTOR,
   type UpdateMatchInput,
   type UpdateMatchResponse,
 } from "../api/mutations/match";
@@ -40,54 +38,44 @@ const defaultUpdate: UpdateMatchInput["input"] = {
   matchStatus: MatchStatusType.Draft,
 };
 
-function RecommendedTutors() {
+function RecommendedStudents() {
   const navigate = useNavigate();
 
   const [user] = useRecoilState(userState);
 
   const [stats] = useRecoilState(userStatisticsState);
 
-  const [tutors, setTutors] = useRecoilState(matchedTutorsListState);
-
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [students, setStudents] = useRecoilState(matchedStudentsListState);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [update, setUpdate] = useState(defaultUpdate);
 
-  const [profile, setProfile] = useState<User | null>(null);
-
-  const showProfile = (user: User) => {
-    setShowProfileModal(true);
-
-    setProfile(user);
-  };
-
-  const [getMatchers, getMatchersResult] = useLazyQuery<
-    GetMatchersResponse,
-    GetMatchersInput
-  >(GET_MATCHERS, { fetchPolicy: "no-cache" });
+  const [getMatchees, getMatcheesResult] = useLazyQuery<
+    GetMatcheesResponse,
+    GetMatcheesInput
+  >(GET_MATCHEES, { fetchPolicy: "no-cache" });
 
   const [updateMatch, updateMatchResult] = useMutation<
     UpdateMatchResponse,
     UpdateMatchInput
-  >(UPDATE_MATCH_STUDENT);
+  >(UPDATE_MATCH_TUTOR);
 
-  const handleGetMatchers = async (filter: GetMatchersInput["filter"] = {}) => {
+  const handleGetMatchees = async (filter: GetMatcheesInput["filter"] = {}) => {
     try {
       filter.take = take;
 
-      const response = await getMatchers({ variables: { filter } });
+      const response = await getMatchees({ variables: { filter } });
 
       if (response.error) {
         return handleResponseErrors(response);
       }
 
-      if (!response.data?.getMatchers) {
+      if (!response.data?.getMatchees) {
         return;
       }
 
-      setTutors(response.data.getMatchers);
+      setStudents(response.data.getMatchees);
     } catch (error) {
       handleErrorMessage(error);
     }
@@ -104,7 +92,7 @@ function RecommendedTutors() {
         return handleResponseErrors(response);
       }
 
-      if (!response.data?.updateMatchAsStudent) {
+      if (!response.data?.updateMatchAsTutor) {
         return setUpdate(defaultUpdate);
       }
 
@@ -115,7 +103,7 @@ function RecommendedTutors() {
       };
 
       if (
-        response.data.updateMatchAsStudent.status === MatchStatusType.Confirmed
+        response.data.updateMatchAsTutor.status === MatchStatusType.Confirmed
       ) {
         successToast("We have a match! 🥳");
 
@@ -123,24 +111,24 @@ function RecommendedTutors() {
       }
 
       if (
-        response.data.updateMatchAsStudent.status ===
-        MatchStatusType.RejectedByStudent
+        response.data.updateMatchAsTutor.status ===
+        MatchStatusType.RejectedByTutor
       ) {
         successToast("Thank you for the feedback");
       } else {
         successToast(
-          "You have accepted this match, now waiting for the Tutor. ✅"
+          "You have accepted this match, now waiting for the Student. ✅"
         );
       }
 
-      await handleGetMatchers();
+      await handleGetMatchees();
     } catch (error) {
       handleErrorMessage(error);
     }
   };
 
   useEffect(() => {
-    handleGetMatchers();
+    handleGetMatchees();
   }, []);
 
   useEffect(() => {
@@ -151,20 +139,14 @@ function RecommendedTutors() {
 
   return (
     <div className="w-full flex flex-col bg-bodyBg ring-1 ring-lines rounded-xl min-h-32 py-5 px-3 mt-6">
-      {showProfileModal && profile && (
-        <ProfileModal
-          user={profile}
-          setShowProfileModal={setShowProfileModal}
-        />
-      )}
       <Dialog
         message={
-          update.matchStatus === MatchStatusType.RejectedByStudent
+          update.matchStatus === MatchStatusType.RejectedByTutor
             ? "Please tell us why you are rejecting this match. Your feedback will help us improve our matchmaking algorithm."
             : "Are you sure you want to proceed?"
         }
         feedbackRequired={
-          update.matchStatus === MatchStatusType.RejectedByStudent
+          update.matchStatus === MatchStatusType.RejectedByTutor
         }
         feedbackValue={update.details}
         onFeedbackChange={details =>
@@ -178,10 +160,10 @@ function RecommendedTutors() {
         }}
       />
       <div className="flex items-start justify-between w-full px-2 pb-3">
-        <p className="pb-2 text-sm text-text">Recommended Tutors</p>
+        <p className="pb-2 text-sm text-text">Recommended Students</p>
         <div className="w-fit flex gap-5">
           <button
-            onClick={() => handleGetMatchers()}
+            onClick={() => handleGetMatchees()}
             className="text-main text-sm flex items-center gap-1"
           >
             <TbReload className="text-lg" />
@@ -190,7 +172,7 @@ function RecommendedTutors() {
         </div>
       </div>
       <div className="w-full grid grid-cols-3 max-xl:grid-cols-2 max-md:grid-cols-1 gap-3">
-        {getMatchersResult.loading ? (
+        {getMatcheesResult.loading ? (
           Array.from({ length: take }).map((_, idx) => (
             <div
               key={idx}
@@ -209,16 +191,16 @@ function RecommendedTutors() {
               </div>
             </div>
           ))
-        ) : getMatchersResult.called && tutors.list.length === 0 ? (
+        ) : getMatcheesResult.called && students.list.length === 0 ? (
           <div className="col-span-3 flex flex-col items-center justify-center w-full py-8">
             <p className="text-textWeak text-sm mb-3">
-              {stats.matcherCount > 0
+              {stats.matcheeCount > 0
                 ? "No new matches yet, check back later"
-                : user.skillsWanted.length <= 0
-                  ? "Please provide the skills you want to learn so we can match you"
+                : user.skillsOfferred.length <= 0
+                  ? "Please provide the skills you want to teach so we can match you"
                   : "We are setting up matches for you."}
             </p>
-            {user.skillsWanted.length <= 0 && (
+            {user.skillsOfferred.length <= 0 && (
               <Link
                 to="/skills"
                 className="bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80"
@@ -228,27 +210,20 @@ function RecommendedTutors() {
             )}
           </div>
         ) : (
-          tutors.list.map((tutor, index) => (
+          students.list.map((student, index) => (
             <div
               key={index}
               className={`text-sm flex flex-col items-start justify-start gap-2 bg-cardBgWeak hover:bg-cardBg cursor-pointer w-full p-3 rounded-3xl relative`}
             >
-              <button
-                onClick={() => showProfile(tutor)}
-                className="w-full h-full absolute top-0 left-0 z-10"
-              ></button>
               <div className="size-16 max-md:size-14 aspect-square min-w-fit rounded-full overflow-hidden flex items-center justify-center mx-2 mt-2">
-                <UserAvatar user={tutor} size={"lg"} />
+                <UserAvatar user={student} size={"lg"} />
               </div>
               <div className="flex flex-1 items-start justify-center flex-col">
                 <p className="text-lg font-semibold break-all line-clamp-1 px-2">
-                  {getFullName(tutor) || "Unknown Tutor"}
-                </p>
-                <p className="text-sm break-all line-clamp-1 text-textWeak px-2">
-                  {tutor.bio || "No Bio"}
+                  {getFullName(student) || "Unknown Student"}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-3 px-2">
-                  {tutor.skillsOfferred.map((skill, index) => (
+                  {student.skillsWanted.map((skill, index) => (
                     <div
                       key={index}
                       className="text-xs py-1.5 px-3 rounded-2xl bg-lines dark:bg-mainWeak "
@@ -260,20 +235,20 @@ function RecommendedTutors() {
                 <div className="w-full flex items-center justify-center mt-6 gap-3 z-20">
                   <button
                     onClick={() => {
-                      if (!tutor.matchId) {
+                      if (!student.matchId) {
                         return;
                       }
 
                       setUpdate({
-                        id: tutor.matchId,
-                        matchStatus: MatchStatusType.AcceptedByStudent,
+                        id: student.matchId,
+                        matchStatus: MatchStatusType.AcceptedByTutor,
                       });
                     }}
                     className="text-sm py-3 px-3 w-full rounded-2xl bg-lines hover:bg-main hover:text-white transition text-center flex items-center justify-center gap-2 group"
                   >
                     <HiHandThumbUp className="text-xl text-textWeak group-hover:text-white transition" />
                     {updateMatchResult.loading &&
-                    update.id === tutor.matchId &&
+                    update.id === student.matchId &&
                     update.matchStatus === MatchStatusType.AcceptedByTutor ? (
                       <Spinner message="Approving" />
                     ) : (
@@ -282,20 +257,20 @@ function RecommendedTutors() {
                   </button>
                   <button
                     onClick={() => {
-                      if (!tutor.matchId) {
+                      if (!student.matchId) {
                         return;
                       }
 
                       setUpdate({
-                        id: tutor.matchId,
-                        matchStatus: MatchStatusType.RejectedByStudent,
+                        id: student.matchId,
+                        matchStatus: MatchStatusType.RejectedByTutor,
                       });
                     }}
                     className="text-sm py-3 px-3 w-full rounded-2xl bg-lines hover:bg-red hover:text-white transition text-center flex items-center justify-center gap-2 group"
                   >
                     <HiHandThumbDown className="text-xl text-textWeak group-hover:text-white transition" />
                     {updateMatchResult.loading &&
-                    update.id === tutor.matchId &&
+                    update.id === student.matchId &&
                     update.matchStatus === MatchStatusType.RejectedByTutor ? (
                       <Spinner message="Rejecting" />
                     ) : (
@@ -313,4 +288,4 @@ function RecommendedTutors() {
   );
 }
 
-export default RecommendedTutors;
+export default RecommendedStudents;

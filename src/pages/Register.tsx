@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { PiGraduationCapDuotone } from "react-icons/pi";
 import { BsPersonVideo } from "react-icons/bs";
 import { LuInfo } from "react-icons/lu";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { FcGoogle } from "react-icons/fc";
 import { Logo } from "../assets";
 import { UserType } from "../interfaces/user";
@@ -20,11 +20,14 @@ import {
 import { useWrapperContext } from "../components/Wrapper";
 import { useGoogleLogin } from "@react-oauth/google";
 import Spinner from "../components/Spinner";
+import { FiUserCheck } from "react-icons/fi";
 
 const Register = () => {
   const location = useLocation();
 
-  const { handleAuthSuccess } = useWrapperContext();
+  const navigate = useNavigate();
+
+  const { handleAuthSuccess, isLoggedIn } = useWrapperContext();
 
   const initialRole = useMemo(() => {
     const query = new URLSearchParams(location.search);
@@ -85,6 +88,28 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bodyBg px-2">
+      {/* Already logged in banner */}
+      {isLoggedIn && (
+        <div className="w-full mt-3 max-w-md bg-cardBg border border-mainWeak text-text rounded-2xl px-6 py-4 mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg z-20 text-center sm:text-left">
+          <div className="flex items-center justify-center bg-mainWeak2 text-main rounded-full p-2">
+            <FiUserCheck className="text-2xl" />
+          </div>
+          <div className="flex-1 flex flex-col gap-2">
+            <span className="font-semibold text-base">
+              You’re already logged in
+            </span>
+            <span className="text-sm text-textWeak">
+              You can go straight to your dashboard.
+            </span>
+            <button
+              className="w-full sm:w-auto mt-2 sm:mt-0 px-4 py-2 bg-main text-white rounded-xl font-medium shadow hover:bg-main/90 transition"
+              onClick={() => navigate({ to: "/dashboard" })}
+            >
+              Go to dashboard
+            </button>
+          </div>
+        </div>
+      )}
       {/* Background Logo */}
       <img
         src={Logo}

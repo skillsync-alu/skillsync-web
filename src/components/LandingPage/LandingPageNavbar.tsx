@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "../../assets";
+import { useWrapperContext } from "../Wrapper";
+import UserAvatar from "../UserAvatar";
 
 function scrollToSection(id: string) {
   const el = document.getElementById(id);
@@ -9,6 +11,8 @@ function scrollToSection(id: string) {
 }
 
 function LandingPageNavbar({ isScrolled }: { isScrolled?: boolean }) {
+  const { isLoggedIn } = useWrapperContext();
+
   return (
     <nav
       className={`w-full h-fit px-10 max-lg:px-5 py-3.5 bg-bodyBg border-lines transition-shadow duration-300 sticky top-0 z-50 ${
@@ -26,48 +30,78 @@ function LandingPageNavbar({ isScrolled }: { isScrolled?: boolean }) {
         </Link>
 
         {/* Navigation Links */}
-        <div className="hidden md:flex space-x-9">
-          <button
-            onClick={() => scrollToSection("home")}
-            className="text-text hover:text-main font-normal text-sm transition-colors"
-          >
-            Home
-          </button>
+        {isLoggedIn ? (
+          <div className="hidden md:flex space-x-9">
+            <Link
+              to="/dashboard"
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/matches"
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              My Matches
+            </Link>
+            <Link
+              to="/skills"
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              Set Skills
+            </Link>
+          </div>
+        ) : (
+          <div className="hidden md:flex space-x-9">
+            <button
+              onClick={() => scrollToSection("home")}
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection("mission")}
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              Mission
+            </button>
+            <button
+              onClick={() => scrollToSection("tutors")}
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              Tutors
+            </button>
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-text hover:text-main font-normal text-sm transition-colors"
+            >
+              FAQs
+            </button>
+          </div>
+        )}
 
-          <button
-            onClick={() => scrollToSection("mission")}
-            className="text-text hover:text-main font-normal text-sm transition-colors"
-          >
-            Mission
-          </button>
-          <button
-            onClick={() => scrollToSection("tutors")}
-            className="text-text hover:text-main font-normal text-sm transition-colors"
-          >
-            Tutors
-          </button>
-          <button
-            onClick={() => scrollToSection("faq")}
-            className="text-text hover:text-main font-normal text-sm transition-colors"
-          >
-            FAQs
-          </button>
-        </div>
-
-        {/* Auth Buttons */}
+        {/* Auth Buttons or Avatar */}
         <div className="flex items-center space-x-6">
-          <Link
-            to="/login"
-            className="text-text hover:text-main font-normal text-sm"
-          >
-            Login
-          </Link>
-          <Link
-            to="/register"
-            className="bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors"
-          >
-            Register
-          </Link>
+          {isLoggedIn ? (
+            <Link to="/profile" className="flex items-center gap-2">
+              <UserAvatar className="size-9 aspect-square min-w-fit rounded-full overflow-hidden" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-text hover:text-main font-normal text-sm"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

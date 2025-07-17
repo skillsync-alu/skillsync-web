@@ -9,20 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as Set_skillsRouteImport } from './routes/set_skills'
+import { Route as TutorsRouteImport } from './routes/tutors'
+import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as My_matchesRouteImport } from './routes/my_matches'
+import { Route as MatchesRouteImport } from './routes/matches'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as Find_tutorsRouteImport } from './routes/find_tutors'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
-const Set_skillsRoute = Set_skillsRouteImport.update({
-  id: '/set_skills',
-  path: '/set_skills',
+const TutorsRoute = TutorsRouteImport.update({
+  id: '/tutors',
+  path: '/tutors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillsRoute = SkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -40,9 +45,9 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const My_matchesRoute = My_matchesRouteImport.update({
-  id: '/my_matches',
-  path: '/my_matches',
+const MatchesRoute = MatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -53,11 +58,6 @@ const LoginRoute = LoginRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Find_tutorsRoute = Find_tutorsRouteImport.update({
-  id: '/find_tutors',
-  path: '/find_tutors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -74,99 +74,106 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/find_tutors': typeof Find_tutorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/my_matches': typeof My_matchesRoute
+  '/matches': typeof MatchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/set_skills': typeof Set_skillsRoute
+  '/skills': typeof SkillsRoute
+  '/tutors': typeof TutorsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/find_tutors': typeof Find_tutorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/my_matches': typeof My_matchesRoute
+  '/matches': typeof MatchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/set_skills': typeof Set_skillsRoute
+  '/skills': typeof SkillsRoute
+  '/tutors': typeof TutorsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/find_tutors': typeof Find_tutorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/my_matches': typeof My_matchesRoute
+  '/matches': typeof MatchesRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/set_skills': typeof Set_skillsRoute
+  '/skills': typeof SkillsRoute
+  '/tutors': typeof TutorsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/find_tutors'
     | '/forgot-password'
     | '/login'
-    | '/my_matches'
+    | '/matches'
     | '/profile'
     | '/register'
     | '/reset-password'
-    | '/set_skills'
+    | '/skills'
+    | '/tutors'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
-    | '/find_tutors'
     | '/forgot-password'
     | '/login'
-    | '/my_matches'
+    | '/matches'
     | '/profile'
     | '/register'
     | '/reset-password'
-    | '/set_skills'
+    | '/skills'
+    | '/tutors'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/find_tutors'
     | '/forgot-password'
     | '/login'
-    | '/my_matches'
+    | '/matches'
     | '/profile'
     | '/register'
     | '/reset-password'
-    | '/set_skills'
+    | '/skills'
+    | '/tutors'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
-  Find_tutorsRoute: typeof Find_tutorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
-  My_matchesRoute: typeof My_matchesRoute
+  MatchesRoute: typeof MatchesRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  Set_skillsRoute: typeof Set_skillsRoute
+  SkillsRoute: typeof SkillsRoute
+  TutorsRoute: typeof TutorsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/set_skills': {
-      id: '/set_skills'
-      path: '/set_skills'
-      fullPath: '/set_skills'
-      preLoaderRoute: typeof Set_skillsRouteImport
+    '/tutors': {
+      id: '/tutors'
+      path: '/tutors'
+      fullPath: '/tutors'
+      preLoaderRoute: typeof TutorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skills': {
+      id: '/skills'
+      path: '/skills'
+      fullPath: '/skills'
+      preLoaderRoute: typeof SkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -190,11 +197,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/my_matches': {
-      id: '/my_matches'
-      path: '/my_matches'
-      fullPath: '/my_matches'
-      preLoaderRoute: typeof My_matchesRouteImport
+    '/matches': {
+      id: '/matches'
+      path: '/matches'
+      fullPath: '/matches'
+      preLoaderRoute: typeof MatchesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -209,13 +216,6 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/find_tutors': {
-      id: '/find_tutors'
-      path: '/find_tutors'
-      fullPath: '/find_tutors'
-      preLoaderRoute: typeof Find_tutorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -238,14 +238,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
-  Find_tutorsRoute: Find_tutorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
-  My_matchesRoute: My_matchesRoute,
+  MatchesRoute: MatchesRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  Set_skillsRoute: Set_skillsRoute,
+  SkillsRoute: SkillsRoute,
+  TutorsRoute: TutorsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

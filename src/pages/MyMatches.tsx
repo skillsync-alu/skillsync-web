@@ -32,6 +32,8 @@ import {
 } from "../utilities/error-handling";
 import { getFullName } from "../utilities/names";
 import { UserType } from "../interfaces/user";
+import Confetti from "react-confetti";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 type Message = {
   sender: string;
@@ -64,6 +66,12 @@ function MyMatches() {
   const [matches, setMatches] = useRecoilState(userMatchesListState);
 
   const [chats, setChats] = useState<Chat[]>([]);
+
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Fetch matches
   const [getMatches, getMatchesResult] = useLazyQuery<
@@ -217,6 +225,21 @@ function MyMatches() {
     ensureFirebaseAuth();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    if (params.get("isConfetti") === "true") {
+      setShowConfetti(true);
+
+      // Remove the param after 3 seconds
+      setTimeout(() => {
+        setShowConfetti(false);
+
+        navigate({ to: location.pathname });
+      }, 12000);
+    }
+  }, [location]);
+
   // Listen to Firestore for real-time chat messages for the opened chat
   useEffect(() => {
     if (!firebaseReady) return;
@@ -269,6 +292,7 @@ function MyMatches() {
 
   return (
     <div>
+      {showConfetti && <Confetti style={{ zIndex: "100000000" }} />}
       <Navbar />
       <div className="w-full flex items-center justify-between flex-col relative text-text px-10 max-lg:px-4">
         <div className="w-full h-40 bg-cardBgWeak absolute top-0 left-0"></div>
@@ -348,26 +372,35 @@ function MyMatches() {
                     {currentChat &&
                       currentChat.messages.map((msg: Message, idx: number) => {
                         const senderInfo = getSenderInfo(msg);
+                        const isSent = msg.sender === user.id;
                         return (
                           <div
                             key={idx}
-                            className={`mb-2 py-2 px-3 rounded-xl w-fit max-md:w-full max-w-[70%] max-md:max-w-[90%] flex items-end justify-start max-sm:flex-col max-sm:items-start gap-3 ${
-                              msg.sender === user.id
-                                ? "bg-mainWeak2 dark:bg-[#286f9e] self-end"
-                                : "bg-lines self-start"
-                            }`}
+                            className={`flex w-full ${isSent ? "justify-end" : "justify-start"}`}
                           >
-                            {/* Optionally show avatar for received messages */}
-                            {msg.sender !== user.id && senderInfo.avatar && (
+                            {/* Avatar for received messages */}
+                            {!isSent && senderInfo.avatar && (
                               <img
                                 src={senderInfo.avatar}
                                 alt={senderInfo.name}
-                                className="w-6 h-6 rounded-full mr-2"
+                                className="w-8 h-8 rounded-full mr-2 self-end shadow"
                               />
                             )}
-                            <div>
-                              <p className="text-sm flex-1">{msg.content}</p>
-                              <p className="text-xs text-textWeak float-end leading-[10px] whitespace-nowrap max-sm:self-end">
+                            <div
+                              className={`relative flex flex-col max-w-[70%] min-w-[60px] px-4 py-2 rounded-2xl shadow-md ${
+                                isSent
+                                  ? "bg-main text-white rounded-br-md ml-auto"
+                                  : "bg-cardBgWeak text-text rounded-bl-md mr-auto"
+                              }`}
+                            >
+                              <p className="text-sm break-words whitespace-pre-line">
+                                {msg.content}
+                              </p>
+                              <span
+                                className={`text-xs mt-1 self-end ${
+                                  isSent ? "text-white/70" : "text-textWeak"
+                                }`}
+                              >
                                 {new Date(msg.timestamp).toLocaleTimeString(
                                   [],
                                   {
@@ -376,7 +409,7 @@ function MyMatches() {
                                     hour12: true,
                                   }
                                 )}
-                              </p>
+                              </span>
                             </div>
                           </div>
                         );
@@ -405,15 +438,21 @@ function MyMatches() {
                       <RiSendPlaneFill className="text-2xl mt-0.5 mr-0.5" />
                     </button>
                   </div>
-                  {firebaseError && (
-                    <div className="text-red-500 text-xs px-3 pb-2">
+                  {firebaseError ? (
+                    <div className="text-red-500 text-xs text-center px-3 pb-2">
                       {firebaseError}
+                    </div>
+                  ) : (
+                    <div className="text-red-500 text-xs text-center px-3 pb-2">
+                      Messages sent in this chat are monitored by the Skillsync
+                      team
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="flex items-center bg-cardBgWeak justify-center h-full text-textWeak text-sm">
-                  Select a tutor to start chatting
+                  Select a {user.type === UserType.Tutor ? "student" : "tutor"}{" "}
+                  to start chatting
                 </div>
               )}
             </div>
