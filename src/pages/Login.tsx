@@ -93,6 +93,35 @@ const Login = () => {
             "Continue with Google"
           )}
         </button>
+        {/* Divider */}
+        <div className="w-full border-t border-lines my-6" />
+        {/* Email/Password Form */}
+        <form className="w-full flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email address"
+            className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98]"
+          >
+            Log in
+          </button>
+        </form>
+        <div className="w-full flex items-center justify-end mt-2">
+          <Link
+            to="/forgot-password"
+            className="text-main underline text-sm hover:text-main/80 transition-colors"
+          >
+            Forgot password?
+          </Link>
+        </div>
         {/* Sign up link */}
         <div className="w-full flex items-center justify-center mt-4">
           <span className="text-sm text-textWeak">Don't have an account?</span>
