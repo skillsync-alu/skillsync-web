@@ -1,14 +1,44 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "../assets";
 import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import {
+  FORGOT_PASSWORD,
+  type ForgotPasswordInput,
+  type ForgotPasswordResponse,
+} from "../api/mutations/authentication";
+import {
+  handleErrorMessage,
+} from "../utilities/error-handling";
+import Spinner from "../components/Spinner";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [forgotPassword, forgotPasswordResult] = useMutation<
+    ForgotPasswordResponse,
+    { input: ForgotPasswordInput }
+  >(FORGOT_PASSWORD);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    
+    try {
+      const response = await forgotPassword({
+        variables: {
+          input: {
+            identifier: email
+          }
+        }
+      });
+
+      if (response.data?.forgotPassword) {
+        setSubmitted(true);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+    }
   };
 
   return (
@@ -57,9 +87,14 @@ const ForgotPassword = () => {
             />
             <button
               type="submit"
-              className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98]"
+              disabled={forgotPasswordResult.loading}
+              className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98] disabled:opacity-60"
             >
-              Send reset code
+              {forgotPasswordResult.loading ? (
+                <Spinner message="Sending reset code" />
+              ) : (
+                "Send reset code"
+              )}
             </button>
           </form>
         )}

@@ -97,20 +97,8 @@ const Login = () => {
     },
   });
 
-  // Testing Strategy - Debug Panel
-  const DebugPanel = () => (
-    <div className="fixed z-50 top-4 right-4 bg-gray-800 text-white p-4 rounded-lg text-xs max-w-xs">
-      <h3>🔧 Debug Info</h3>
-      <p>Form Data: {JSON.stringify(formData, null, 2)}</p>
-      <p>Loading: {loginTraditionalResult.loading ? "✅" : "❌"}</p>
-      <p>Logged In: {isLoggedIn ? "✅" : "❌"}</p>
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bodyBg px-2 relative overflow-hidden">
-      {/* Debug Panel in dev mode */}
-      {config.isDevelopment && <DebugPanel />}
       {/* Already logged in banner */}
       {isLoggedIn && (
         <div className="w-full mt-3 max-w-md bg-cardBg border border-mainWeak text-text rounded-2xl px-6 py-4 mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg z-20 text-center sm:text-left">

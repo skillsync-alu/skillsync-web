@@ -39,6 +39,15 @@ export const CREATE_USER_TRADITIONAL = gql`
   }
 `;
 
+// Forgot Password Mutation
+export const FORGOT_PASSWORD = gql`
+  mutation forgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input) {
+      message
+    }
+  }
+`;
+
 export enum SocialLoginType {
   Google = "Google",
 }
