@@ -19,6 +19,16 @@ export const LOGIN_USER_SOCIAL = gql`
   }
 `;
 
+// Traditional Login Mutation
+export const LOGIN_USER_TRADITIONAL = gql`
+  mutation loginUser($input: LoginUserInput!) {
+    loginUser(input: $input) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
 export enum SocialLoginType {
   Google = "Google",
 }
@@ -37,6 +47,19 @@ export interface SocialLoginResponse {
   loginUserBySocialMedia: LoginResponse;
 
   createUserBySocialMedia: LoginResponse;
+}
+
+// Traditional Login Interfaces
+export interface LoginUserInput {
+  identifier: string; // email or username
+  password: string;
+}
+
+export interface LoginUserResponse {
+  loginUser: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export interface CreateUserInput {
