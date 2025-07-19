@@ -12,6 +12,9 @@ import {
   SocialLoginType,
   type SocialLoginInput,
   type SocialLoginResponse,
+  CREATE_USER_TRADITIONAL,
+  type CreateUserInput,
+  type CreateUserResponse,
 } from "../api/mutations/authentication";
 import {
   handleErrorMessage,
@@ -49,10 +52,24 @@ const Register = () => {
 
   const [agreed, setAgreed] = useState(false);
 
+  // Traditional Registration Form State
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
   const [createUser, createUserResult] = useMutation<
     SocialLoginResponse,
     SocialLoginInput
   >(CREATE_USER_SOCIAL);
+
+  const [createUserTraditional, createUserTraditionalResult] = useMutation<
+    CreateUserResponse,
+    { input: CreateUserInput }
+  >(CREATE_USER_TRADITIONAL);
 
   const handleCreateUser = async (input: SocialLoginInput["input"]) => {
     try {
@@ -67,6 +84,41 @@ const Register = () => {
       }
 
       handleAuthSuccess(response.data.createUserBySocialMedia.accessToken);
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
+  // Traditional Registration Form Handler
+  const handleTraditionalRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      handleErrorMessage("Passwords do not match");
+      return;
+    }
+
+    if (!agreed) {
+      handleErrorMessage("Please agree to the Terms & Conditions");
+      return;
+    }
+
+    try {
+      const response = await createUserTraditional({
+        variables: {
+          input: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password
+          }
+        }
+      });
+
+      if (response.data?.createUser?.accessToken) {
+        handleAuthSuccess(response.data.createUser.accessToken);
+      }
     } catch (error) {
       handleErrorMessage(error);
     }
@@ -204,39 +256,59 @@ const Register = () => {
         {/* Divider */}
         <div className="w-full border-t border-lines my-6" />
         {/* Email/Password Form */}
-        <form className="w-full flex flex-col gap-4">
+        <form onSubmit={handleTraditionalRegister} className="w-full flex flex-col gap-4">
           <div className="flex gap-4">
             <input
               type="text"
               placeholder="First name"
+              value={formData.firstName}
+              onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
               className="w-1/2 px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+              required
             />
             <input
               type="text"
               placeholder="Last name"
+              value={formData.lastName}
+              onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
               className="w-1/2 px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+              required
             />
           </div>
           <input
             type="email"
             placeholder="Email address"
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            required
           />
           <input
             type="password"
             placeholder="Confirm password"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            required
           />
           <button
             type="submit"
-            className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98]"
+            disabled={createUserTraditionalResult.loading || !agreed}
+            className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98] disabled:opacity-60"
           >
-            Sign up
+            {createUserTraditionalResult.loading ? (
+              <Spinner message="Creating account" />
+            ) : (
+              "Sign up"
+            )}
           </button>
         </form>
         {/* Login link */}

@@ -54,7 +54,7 @@ export const WrapperContext = createContext<{
 
 export const useWrapperContext = () => useContext(WrapperContext);
 
-const paths = ["/register", "/login", "/404"];
+const paths = ["/register", "/login", "/forgot-password", "/reset-password", "/404"];
 
 const allowedPaths = ["/"].concat(paths);
 
