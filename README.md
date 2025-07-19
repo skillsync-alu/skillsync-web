@@ -166,3 +166,42 @@ public/
 
 ---
 
+## FAQ
+
+
+**Why choose Skillsync?**
+> Skillsync connects Africa’s youth with experienced professionals for hands-on training in high-demand vocational skills. Our platform focuses on real-world learning, personalized mentorship, and long-term career growth.
+
+
+**What skills can I learn?**
+> Vocational trades such as carpentry, electrical work, plumbing, tailoring, graphic design, agribusiness, and many more.
+
+
+**How does mentorship work?**
+> Learners are matched with verified tutors for 1:1 mentorship, with practical guidance tailored to their goals.
+
+
+**Can I become a tutor?**
+> Yes—experienced professionals can apply to become mentors and share their expertise.
+
+
+---
+
+
+## License
+
+
+[MIT](LICENSE)
+
+
+---
+
+
+## Contact
+
+
+- [API Repository](https://github.com/skillsync-alu/skillsync-api)
+- [skillsync-web] (https://github.com/skillsync-alu/skillsync-web.git)
+- [skillsync-website] (https://skillsync-alu.web.app)
+
+
