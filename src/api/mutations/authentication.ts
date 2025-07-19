@@ -19,6 +19,35 @@ export const LOGIN_USER_SOCIAL = gql`
   }
 `;
 
+// Traditional Login Mutation
+export const LOGIN_USER_TRADITIONAL = gql`
+  mutation loginUser($input: LoginUserInput!) {
+    loginUser(input: $input) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+// Traditional Registration Mutation
+export const CREATE_USER_TRADITIONAL = gql`
+  mutation createUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+// Forgot Password Mutation
+export const FORGOT_PASSWORD = gql`
+  mutation forgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input) {
+      message
+    }
+  }
+`;
+
 export enum SocialLoginType {
   Google = "Google",
 }
@@ -39,22 +68,42 @@ export interface SocialLoginResponse {
   createUserBySocialMedia: LoginResponse;
 }
 
+// Traditional Login Interfaces
+export interface LoginUserInput {
+  identifier: string; // email or username
+  password: string;
+}
+
+export interface LoginUserResponse {
+  loginUser: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
+// Traditional Registration Interfaces
 export interface CreateUserInput {
-  input: {
-    firstName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  type?: UserType;
+}
 
-    lastName: string;
+export interface CreateUserResponse {
+  createUser: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
 
-    username?: string;
+// Forgot Password Interfaces
+export interface ForgotPasswordInput {
+  identifier: string; // email or username
+}
 
-    email: string;
-
-    phoneNumber?: string;
-
-    referredBy?: string;
-
-    type?: UserType;
-
-    phoneCode?: CountryCode;
+export interface ForgotPasswordResponse {
+  forgotPassword: {
+    message: string;
   };
 }

@@ -2,11 +2,15 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { FcGoogle } from "react-icons/fc";
 import { Logo } from "../assets";
 import { useMutation } from "@apollo/client";
+import { useState } from "react";
 import {
   LOGIN_USER_SOCIAL,
   SocialLoginType,
   type SocialLoginInput,
   type SocialLoginResponse,
+  LOGIN_USER_TRADITIONAL,
+  type LoginUserInput,
+  type LoginUserResponse,
 } from "../api/mutations/authentication";
 import {
   handleErrorMessage,
@@ -16,16 +20,28 @@ import { useWrapperContext } from "../components/Wrapper";
 import { useGoogleLogin } from "@react-oauth/google";
 import Spinner from "../components/Spinner";
 import { FiUserCheck } from "react-icons/fi";
+import { config } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const { handleAuthSuccess, isLoggedIn } = useWrapperContext();
 
+  // State for form
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
   const [loginUser, loginUserResult] = useMutation<
     SocialLoginResponse,
     SocialLoginInput
   >(LOGIN_USER_SOCIAL);
+
+  const [loginTraditional, loginTraditionalResult] = useMutation<
+    LoginUserResponse,
+    { input: LoginUserInput }
+  >(LOGIN_USER_TRADITIONAL);
 
   const handleLoginUser = async (input: SocialLoginInput["input"]) => {
     try {
@@ -40,6 +56,29 @@ const Login = () => {
       }
 
       handleAuthSuccess(response.data.loginUserBySocialMedia.accessToken);
+    } catch (error) {
+      handleErrorMessage(error);
+    }
+  };
+
+  // Form submission handler
+  const handleTraditionalLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted with:", formData);
+    
+    try {
+      const response = await loginTraditional({
+        variables: {
+          input: {
+            identifier: formData.email,
+            password: formData.password
+          }
+        }
+      });
+      
+      if (response.data?.loginUser?.accessToken) {
+        handleAuthSuccess(response.data.loginUser.accessToken);
+      }
     } catch (error) {
       handleErrorMessage(error);
     }
@@ -120,23 +159,34 @@ const Login = () => {
         </button>
         {/* Divider */}
         <div className="w-full border-t border-lines my-6" />
-        {/* Email/Password Form */}
-        <form className="w-full flex flex-col gap-4">
+        {/* Email/Password Form: Update Form */}
+        <form onSubmit={handleTraditionalLogin} className="w-full flex flex-col gap-4">
           <input
             type="email"
             placeholder="Email address"
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            required
           />
           <button
             type="submit"
-            className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98]"
+            disabled={loginTraditionalResult.loading}
+            className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98] disabled:opacity-60"
           >
-            Log in
+            {loginTraditionalResult.loading ? (
+              <Spinner message="Logging in" />
+            ) : (
+              "Log in"
+            )}
           </button>
         </form>
         <div className="w-full flex items-center justify-end mt-2">
