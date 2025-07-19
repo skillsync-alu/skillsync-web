@@ -117,4 +117,23 @@ The app runs at [http://localhost:5173](http://localhost:5173) by default.
 
 ---
 
+## Project Structure
+
+
+```
+src/
+├── components/ # Shared UI components (Navbar, FAQ, Spinner, etc.)
+├── pages/ # Route pages (Login, Register, SetSkills, MyMatches, etc.)
+├── api/ # GraphQL queries & mutations
+├── config/ # Firebase configuration
+├── resources/ # Recoil atoms and user state
+├── routes/ # TanStack Router route definitions
+├── utilities/ # Error handling and helpers
+└── main.tsx # App entry point
+public/
+└── logo.png # Brand assets
+```
+
+
+---
 
