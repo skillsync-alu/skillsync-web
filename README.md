@@ -52,3 +52,18 @@ Skillsync Web is the frontend for the Skillsync platform, designed to connect le
 
 
 ---
+
+## Tech Stack
+
+
+- **Frontend**: [React](https://react.dev/) (Vite), [TypeScript](https://www.typescriptlang.org/)
+- **State Management**: [Recoil](https://recoiljs.org/)
+- **Routing**: [TanStack Router](https://tanstack.com/router/latest)
+- **API Integration**: [Apollo Client](https://www.apollographql.com/docs/react/)
+- **Backend**: [Skillsync API](https://github.com/skillsync-alu/skillsync-api)
+- **Authentication & Messaging**: [Firebase](https://firebase.google.com/)
+- **Styling**: Custom CSS & Tailwind classes
+
+
+---
+
