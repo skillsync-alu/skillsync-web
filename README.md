@@ -137,3 +137,32 @@ public/
 
 ---
 
+
+## Core Workflows
+
+
+### Registration
+
+
+- Users choose role (Learner or Tutor) during sign-up.
+- Role determines subsequent onboarding and skill selection.
+
+
+### Skill Selection
+
+
+- Learners: Choose skills to learn.
+- Tutors: Choose skills to offer.
+- Both limited to 6 skills for focused matching.
+
+
+### Matching & Chat
+
+
+- Platform matches learners and tutors based on skills.
+- Matched users may chat securely via the app.
+- All messages are monitored for safety.
+
+
+---
+
