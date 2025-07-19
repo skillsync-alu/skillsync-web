@@ -67,3 +67,54 @@ Skillsync Web is the frontend for the Skillsync platform, designed to connect le
 
 ---
 
+## Getting Started
+
+
+### Prerequisites
+
+
+- Node.js (v18 or higher recommended)
+- Yarn or npm
+
+
+### Installation
+
+
+```bash
+git clone https://github.com/skillsync-alu/skillsync-web.git
+cd skillsync-web
+yarn install # or npm install
+```
+
+
+### Environment Setup
+
+
+Create a `.env` file based on `.env.example` and set your Firebase credentials and API endpoint:
+
+
+```
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_API_URL=https://api.skillsync.africa/graphql
+```
+
+
+### Running Locally
+
+
+```bash
+yarn dev # or npm run dev
+```
+
+
+The app runs at [http://localhost:5173](http://localhost:5173) by default.
+
+
+---
+
+
