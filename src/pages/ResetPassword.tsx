@@ -1,16 +1,93 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "../assets";
 import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { RESET_PASSWORD, REQUEST_OTP, type ResetPasswordInput, type ResetPasswordResponse, type RequestOtpResponse } from "../api/mutations/authentication";
+import Spinner from "../components/Spinner";
+import toast from "react-hot-toast";
+import { handleErrorMessage, handleResponseErrors } from "../utilities/error-handling";
+import { useRef, useEffect } from "react";
 
 const ResetPassword = () => {
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [email, setEmail] = useState(""); // For resending OTP
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [resetPassword] = useMutation<ResetPasswordResponse, ResetPasswordInput>(RESET_PASSWORD);
+  const [requestOtp] = useMutation<RequestOtpResponse, { input: { identifier: string } }>(REQUEST_OTP);
+
+  useEffect(() => {
+    if (timer > 0) {
+      timerRef.current = setTimeout(() => setTimer(timer - 1), 1000);
+    } else if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [timer]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (password !== confirmPassword) {
+      handleErrorMessage("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await resetPassword({
+        variables: { input: { code: otp, password } },
+      });
+      if (response.errors) {
+        handleResponseErrors(response);
+        setLoading(false);
+        return;
+      }
+      if (response.data?.resetPassword?.message) {
+        toast.success(response.data.resetPassword.message);
+        setSubmitted(true);
+      } else {
+        toast.success("Your password has been reset successfully!");
+        setSubmitted(true);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      handleErrorMessage("Please enter your email or username to resend OTP.");
+      return;
+    }
+    setResendLoading(true);
+    try {
+      const response = await requestOtp({ variables: { input: { identifier: email } } });
+      if (response.errors) {
+        handleResponseErrors(response);
+        setResendLoading(false);
+        return;
+      }
+      if (response.data?.requestOtp) {
+        toast.success("OTP has been resent to your email.");
+        setTimer(60);
+      } else {
+        handleErrorMessage("Failed to resend OTP. Please try again.");
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
@@ -32,6 +109,25 @@ const ResetPassword = () => {
         <p className="text-sm text-textWeak mb-6 text-center">
           Enter the code sent to your email and choose a new password.
         </p>
+        {/* Resend OTP Section */}
+        <form className="w-full flex flex-col gap-2 mb-4" onSubmit={handleResendOtp}>
+          <input
+            type="text"
+            placeholder="Email or username for OTP"
+            className="w-full px-4 py-2 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            disabled={timer > 0 || resendLoading}
+          />
+          <button
+            type="submit"
+            className="w-full px-4 py-2 rounded-xl font-medium text-sm bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 disabled:opacity-60"
+            disabled={timer > 0 || resendLoading}
+          >
+            {resendLoading ? <Spinner message="Resending OTP" /> : timer > 0 ? `Resend OTP in ${timer}s` : "Resend OTP"}
+          </button>
+        </form>
+        {/* End Resend OTP Section */}
         {submitted ? (
           <div className="w-full flex flex-col items-center">
             <p className="text-green text-center mb-4">
@@ -72,9 +168,10 @@ const ResetPassword = () => {
             />
             <button
               type="submit"
-              className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98]"
+              className="w-full px-4 py-3 rounded-xl font-medium text-base bg-main text-white shadow-sm hover:bg-main/90 transition-all duration-150 active:scale-[0.98] disabled:opacity-60"
+              disabled={loading}
             >
-              Reset password
+              {loading ? <Spinner message="Resetting password" /> : "Reset password"}
             </button>
           </form>
         )}

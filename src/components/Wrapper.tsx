@@ -30,6 +30,7 @@ import {
 } from "../utilities/error-handling";
 import { type CountryCode } from "libphonenumber-js";
 import { currencyCountries } from "../constants";
+import { removePersistentState } from "../utilities/implement-persist";
 // import toast from "react-hot-toast";
 // import { removePersistentState } from "../utilities/implement-persist";
 // import { getFullName } from "../utilities/names";
@@ -54,7 +55,13 @@ export const WrapperContext = createContext<{
 
 export const useWrapperContext = () => useContext(WrapperContext);
 
-const paths = ["/register", "/login", "/forgot-password", "/reset-password", "/404"];
+const paths = [
+  "/register",
+  "/login",
+  "/forgot-password",
+  "/reset-password",
+  "/404",
+];
 
 const allowedPaths = ["/"].concat(paths);
 
@@ -124,13 +131,13 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const userCountry: CountryCode = useMemo(() => {
     if (!user.id) {
-      return "NG";
+      return "RW";
     }
 
     return (
       (Object.entries(currencyCountries).find(
         ([, value]) => value === user.currency
-      )?.[0] as CountryCode) || "NG"
+      )?.[0] as CountryCode) || "RW"
     );
   }, [user]);
 
@@ -179,6 +186,8 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const newpath = path;
 
       resetPath();
+
+      removePersistentState(UnAuthorizedSessionState);
 
       navigate({ to: newpath });
     } else {
