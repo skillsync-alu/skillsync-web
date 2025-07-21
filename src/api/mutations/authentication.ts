@@ -107,3 +107,33 @@ export interface ForgotPasswordResponse {
     message: string;
   };
 }
+
+
+// Reset Password Mutation
+export const RESET_PASSWORD = gql`
+mutation resetPassword($input: ResetPasswordInput!) {
+  resetPassword(input: $input) {
+    success
+  }
+}
+`
+// Reset Password Interfaces
+export interface ResetPasswordInput {
+  input: {code: string;password: string;
+  }
+}
+
+export interface ResetPasswordResponse {
+  resetPassword: {message: string;
+  };
+}
+// Reqeust otp mutation
+export const REQUEST_OTP = gql`
+mutation requestOtp($input: ForgotPasswordInput!) {
+  requestOtp(input: $input)
+}
+`
+// Request otp interfaces
+export interface RequestOtpResponse {
+  requestOtp: boolean;
+}
