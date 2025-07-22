@@ -32,6 +32,7 @@ import Dialog from "./Dialog";
 import Spinner from "./Spinner";
 import Progress from "./Progress";
 import UserAvatar from "./UserAvatar";
+import { FIND_MATCHERS, type FindMatchersResponse } from "../api/mutations/match";
 
 const take = 6;
 
@@ -72,6 +73,8 @@ function RecommendedTutors() {
     UpdateMatchResponse,
     UpdateMatchInput
   >(UPDATE_MATCH_STUDENT);
+
+  const [findMatchers, findMatchersResult] = useMutation<FindMatchersResponse>(FIND_MATCHERS);
 
   const handleGetMatchers = async (filter: GetMatchersInput["filter"] = {}) => {
     try {
@@ -136,6 +139,30 @@ function RecommendedTutors() {
       await handleGetMatchers();
     } catch (error) {
       handleErrorMessage(error);
+    }
+  };
+
+  const handleFindMatchers = async () => {
+    try {
+      const response = await findMatchers();
+
+      if(response.errors){
+        return handleResponseErrors(response)
+      }
+
+      if(!response.data?.findMatchers){
+        return;
+      }
+
+      if (response.data?.findMatchers?.message) {
+        toast.success(response.data.findMatchers.message);
+      } else {
+        toast.success("Matchmaking started!");
+      }
+
+      await handleGetMatchers();
+    } catch (err) {
+      handleErrorMessage(err);
     }
   };
 
@@ -225,6 +252,16 @@ function RecommendedTutors() {
               >
                 Set Skills
               </Link>
+            )}
+            {/* Find Matches Button */}
+            {user.skillsWanted.length > 0 && tutors.list.length === 0 && stats.matcherCount === 0 && (
+              <button
+                className="mt-3 bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80 disabled:opacity-60"
+                disabled={findMatchersResult.loading}
+                onClick={handleFindMatchers}
+              >
+                {findMatchersResult.loading ? <Spinner message="Finding matches" /> : "Find Matches"}
+              </button>
             )}
           </div>
         ) : (

@@ -23,6 +23,8 @@ import {
   UPDATE_MATCH_TUTOR,
   type UpdateMatchInput,
   type UpdateMatchResponse,
+  FIND_MATCHEES,
+  type FindMatcheesResponse,
 } from "../api/mutations/match";
 import { MatchStatusType } from "../interfaces/match";
 import toast from "react-hot-toast";
@@ -60,6 +62,8 @@ function RecommendedStudents() {
     UpdateMatchResponse,
     UpdateMatchInput
   >(UPDATE_MATCH_TUTOR);
+
+  const [findMatchees, findMatcheesResult] = useMutation<FindMatcheesResponse>(FIND_MATCHEES);
 
   const handleGetMatchees = async (filter: GetMatcheesInput["filter"] = {}) => {
     try {
@@ -124,6 +128,30 @@ function RecommendedStudents() {
       await handleGetMatchees();
     } catch (error) {
       handleErrorMessage(error);
+    }
+  };
+
+  const handleFindMatchees = async () => {
+    try {
+      const response = await findMatchees();
+
+      if(response.errors){
+        return handleResponseErrors(response)
+      }
+
+      if(!response.data?.findMatchees){
+        return;
+      }
+
+      if (response.data?.findMatchees?.message) {
+        toast.success(response.data.findMatchees.message);
+      } else {
+        toast.success("Matchmaking started!");
+      }
+
+      await handleGetMatchees();
+    } catch (err) {
+      handleErrorMessage(err);
     }
   };
 
@@ -207,6 +235,16 @@ function RecommendedStudents() {
               >
                 Set Skills
               </Link>
+            )}
+            {/* Find Matches Button */}
+            {user.skillsOfferred.length > 0 && students.list.length === 0 && stats.matcheeCount === 0 && (
+              <button
+                className="mt-3 bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80 disabled:opacity-60"
+                disabled={findMatcheesResult.loading}
+                onClick={handleFindMatchees}
+              >
+                {findMatcheesResult.loading ? <Spinner message="Finding matches" /> : "Find Matches"}
+              </button>
             )}
           </div>
         ) : (
