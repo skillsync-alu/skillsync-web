@@ -54,4 +54,6 @@ export interface User extends Document {
   isStarred?: boolean;
 
   isMatched?: boolean;
+
+  isStudentMatched?: boolean;
 }

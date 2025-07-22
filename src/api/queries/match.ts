@@ -88,6 +88,7 @@ export const GET_MATCHEES = gql`
         isStarred
         isMatched
         matchId
+        isStudentMatched
       }
     }
   }

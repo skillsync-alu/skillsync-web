@@ -2,7 +2,7 @@ import React from "react";
 import confirmation from "../assets/confirmation.svg";
 
 interface DialogProps {
-  message: string;
+  message: React.ReactNode;
   onConfirm: () => void;
   onReject: () => void;
   confirmText?: string;

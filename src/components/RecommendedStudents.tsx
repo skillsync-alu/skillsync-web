@@ -63,7 +63,8 @@ function RecommendedStudents() {
     UpdateMatchInput
   >(UPDATE_MATCH_TUTOR);
 
-  const [findMatchees, findMatcheesResult] = useMutation<FindMatcheesResponse>(FIND_MATCHEES);
+  const [findMatchees, findMatcheesResult] =
+    useMutation<FindMatcheesResponse>(FIND_MATCHEES);
 
   const handleGetMatchees = async (filter: GetMatcheesInput["filter"] = {}) => {
     try {
@@ -135,11 +136,11 @@ function RecommendedStudents() {
     try {
       const response = await findMatchees();
 
-      if(response.errors){
-        return handleResponseErrors(response)
+      if (response.errors) {
+        return handleResponseErrors(response);
       }
 
-      if(!response.data?.findMatchees){
+      if (!response.data?.findMatchees) {
         return;
       }
 
@@ -237,15 +238,21 @@ function RecommendedStudents() {
               </Link>
             )}
             {/* Find Matches Button */}
-            {user.skillsOfferred.length > 0 && students.list.length === 0 && stats.matcheeCount === 0 && (
-              <button
-                className="mt-3 bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80 disabled:opacity-60"
-                disabled={findMatcheesResult.loading}
-                onClick={handleFindMatchees}
-              >
-                {findMatcheesResult.loading ? <Spinner message="Finding matches" /> : "Find Matches"}
-              </button>
-            )}
+            {user.skillsOfferred.length > 0 &&
+              students.list.length === 0 &&
+              stats.matcheeCount === 0 && (
+                <button
+                  className="mt-3 bg-main text-white px-4 py-2 text-sm rounded-xl transition-colors hover:bg-main/80 disabled:opacity-60"
+                  disabled={findMatcheesResult.loading}
+                  onClick={handleFindMatchees}
+                >
+                  {findMatcheesResult.loading ? (
+                    <Spinner message="Finding matches" />
+                  ) : (
+                    "Find Matches"
+                  )}
+                </button>
+              )}
           </div>
         ) : (
           students.list.map((student, index) => (
@@ -257,8 +264,13 @@ function RecommendedStudents() {
                 <UserAvatar user={student} size={"lg"} />
               </div>
               <div className="flex flex-1 items-start justify-center flex-col">
-                <p className="text-lg font-semibold break-all line-clamp-1 px-2">
+                <p className="text-lg font-semibold break-all line-clamp-1 px-2 flex items-center gap-2">
                   {getFullName(student) || "Unknown Student"}
+                  {student.isStudentMatched && (
+                    <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold border border-blue-300">
+                      Matched with you
+                    </span>
+                  )}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-3 px-2">
                   {student.skillsWanted.map((skill, index) => (

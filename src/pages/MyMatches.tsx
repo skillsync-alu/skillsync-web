@@ -25,6 +25,13 @@ import {
   GET_FIREBASE_CUSTOM_TOKEN,
   type GetFirebaseTokenResponse,
 } from "../api/mutations/user";
+import {
+  UPDATE_FEEDBACK,
+  type UpdateFeedbackResponse,
+} from "../api/mutations/feedback";
+import { FaRegCommentDots } from "react-icons/fa";
+import Dialog from "../components/Dialog";
+import toast from "react-hot-toast";
 import { userMatchesListState } from "../resources/match";
 import {
   handleErrorMessage,
@@ -72,6 +79,14 @@ function MyMatches() {
   const navigate = useNavigate();
 
   const [showConfetti, setShowConfetti] = useState(false);
+
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
+
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+
+  const [updateFeedback] = useMutation<UpdateFeedbackResponse>(UPDATE_FEEDBACK);
 
   // Fetch matches
   const [getMatches, getMatchesResult] = useLazyQuery<
@@ -217,6 +232,36 @@ function MyMatches() {
     // Determine the other participant
     const other = match.matcher.id === user.id ? match.matchee : match.matcher;
     return { name: getFullName(other), avatar: other.avatar };
+  };
+
+  const handleUpdateFeedback = async () => {
+    if (!openedTutorID || !feedbackMessage.trim()) {
+      return;
+    }
+
+    setFeedbackLoading(true);
+
+    try {
+      const response = await updateFeedback({
+        variables: {
+          input: { match: openedTutorID, message: feedbackMessage.trim() },
+        },
+      });
+
+      if (response.errors) {
+        toast.error("Failed to submit feedback.");
+      } else {
+        toast.success("Feedback submitted! Thank you.");
+
+        setIsFeedbackDialogOpen(false);
+
+        setFeedbackMessage("");
+      }
+    } catch (err) {
+      toast.error("Failed to submit feedback.");
+    } finally {
+      setFeedbackLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -366,7 +411,36 @@ function MyMatches() {
                       </div>
                       <p className="text-sm">{currentChat.username}</p>
                     </button>
+                    <button
+                      className="ml-2 p-2 rounded-full hover:bg-main/10 text-main flex items-center"
+                      title="Give Feedback"
+                      onClick={() => setIsFeedbackDialogOpen(true)}
+                    >
+                      <FaRegCommentDots className="text-xl" />
+                    </button>
                   </div>
+                  <Dialog
+                    open={isFeedbackDialogOpen}
+                    message={
+                      <div>
+                        <div>Share feedback about this match.</div>
+                        <div className="text-xs text-textWeak mt-2">
+                          Your feedback is <b>totally anonymous</b>, the other
+                          person will not see it, only the Skillsync team will
+                          review your feedback.
+                        </div>
+                      </div>
+                    }
+                    feedbackRequired={true}
+                    feedbackValue={feedbackMessage}
+                    onFeedbackChange={setFeedbackMessage}
+                    onConfirm={handleUpdateFeedback}
+                    onReject={() => {
+                      setIsFeedbackDialogOpen(false);
+                      setFeedbackMessage("");
+                    }}
+                    confirmText={feedbackLoading ? "Submitting..." : "Submit"}
+                  />
                   {/* chats body */}
                   <div className="flex-1 w-full overflow-y-auto p-4 flex flex-col gap-3">
                     {currentChat &&
