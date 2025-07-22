@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import type { Match, MatchStatusType } from "../../interfaces/match";
+import type { AuthResponse } from "../../interfaces";
 
 export const CREATE_MATCH = gql`
   mutation createMatch($matcher: ObjectId!) {
@@ -45,4 +46,31 @@ export interface UpdateMatchInput {
 export interface UpdateMatchResponse {
   updateMatchAsStudent: Match;
   updateMatchAsTutor: Match;
+}
+
+
+export const FIND_MATCHERS = gql`
+mutation {
+  findMatchers {
+    success
+    message
+  }
+}
+`
+
+export interface FindMatchersResponse {
+  findMatchers: AuthResponse;
+}
+
+export const FIND_MATCHEES = gql`
+mutation {
+  findMatchees {
+    success
+    message
+  }
+}
+`
+
+export interface FindMatcheesResponse {
+  findMatchees: AuthResponse;
 }
