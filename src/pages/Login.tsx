@@ -20,7 +20,6 @@ import { useWrapperContext } from "../components/Wrapper";
 import { useGoogleLogin } from "@react-oauth/google";
 import Spinner from "../components/Spinner";
 import { FiUserCheck } from "react-icons/fi";
-import { config } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,8 +28,8 @@ const Login = () => {
 
   // State for form
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   const [loginUser, loginUserResult] = useMutation<
@@ -65,17 +64,17 @@ const Login = () => {
   const handleTraditionalLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted with:", formData);
-    
+
     try {
       const response = await loginTraditional({
         variables: {
           input: {
             identifier: formData.email,
-            password: formData.password
-          }
-        }
+            password: formData.password,
+          },
+        },
       });
-      
+
       if (response.data?.loginUser?.accessToken) {
         handleAuthSuccess(response.data.loginUser.accessToken);
       }
@@ -160,12 +159,17 @@ const Login = () => {
         {/* Divider */}
         <div className="w-full border-t border-lines my-6" />
         {/* Email/Password Form: Update Form */}
-        <form onSubmit={handleTraditionalLogin} className="w-full flex flex-col gap-4">
+        <form
+          onSubmit={handleTraditionalLogin}
+          className="w-full flex flex-col gap-4"
+        >
           <input
             type="email"
             placeholder="Email address"
             value={formData.email}
-            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, email: e.target.value }))
+            }
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
             required
           />
@@ -173,7 +177,9 @@ const Login = () => {
             type="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, password: e.target.value }))
+            }
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
             required
           />

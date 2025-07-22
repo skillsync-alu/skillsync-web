@@ -36,7 +36,7 @@ export interface UpdateUserInput {
       skillsOfferred?: string[];
 
       skillsWanted?: string[];
-    } & CreateUserInput["input"]
+    } & CreateUserInput
   >;
 }
 
