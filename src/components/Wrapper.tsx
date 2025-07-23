@@ -35,6 +35,8 @@ import { removePersistentState } from "../utilities/implement-persist";
 // import { removePersistentState } from "../utilities/implement-persist";
 // import { getFullName } from "../utilities/names";
 
+// Create the authentication context with default values
+// This will be provided at the app root and consumed by child components
 export const WrapperContext = createContext<{
   isUser: boolean;
   isTutor: boolean;
@@ -48,23 +50,29 @@ export const WrapperContext = createContext<{
   isTutor: false,
   isLoggedIn: false,
   userCountry: "RW",
-  handleLogout: () => {},
-  handleAuthSuccess: async () => {},
+  handleLogout: () => { },
+  handleAuthSuccess: async () => { },
   handleGetUser: async () => defaultUser,
 });
 
+// Custom hook for accessing authentication context in components
+// This makes it easy for any component to get auth state and functions
 export const useWrapperContext = () => useContext(WrapperContext);
 
+// Define which routes are accessible without authentication
+// These are public pages that don't require users to be logged in
 const paths = [
-  "/register",
-  "/login",
-  "/forgot-password",
-  "/reset-password",
-  "/404",
+  "/register", // Registration page
+  "/login", // Login page
+  "/forgot-password", // Password reset request page - added this during auth implementation
+  "/reset-password", // Password reset completion page - I added this during auth implementation
+  "/404", // Not found page
 ];
 
 const allowedPaths = ["/"].concat(paths);
 
+// Helper function to check if current route is accessible without authentication
+// This is used by the authentication guard logic below
 const isAllowed = (path: string) => {
   if (!path) {
     return false;
@@ -76,11 +84,16 @@ const isAllowed = (path: string) => {
   );
 };
 
+// Main wrapper component that provides authentication context to the entire app
+// This manages global authentication state and routing based on auth status
 const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
 
+  // Navigation hook for redirecting users based on authentication state
   const navigate = useNavigate();
 
+  // State to track the currently logged-in user
+  // This gets populated when a valid token is found or user logs in
   const [user, setUser] = useRecoilState(userState);
 
   const [isHandlingGlobalEffect, setIsHandlingGlobalEffect] = useState(false);
@@ -93,6 +106,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const [getUser] = useLazyQuery<GetUserResponse, GetUserInput>(GET_USER);
 
+  // Try to get stored authentication token
   const token = Cookies.get(config.keys.access);
 
   const isLoggedIn = useMemo(() => {
@@ -169,15 +183,22 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   };
 
+  // Function to logout user and clear all authentication data
+  // This removes tokens and redirects to public pages
   const handleLogout = () => {
     resetUser();
 
+    // Remove the authentication token from cookies
     Cookies.remove(config.keys.access);
 
     window.location.replace("/login");
   };
 
+  // Function to handle successful authentication from login/register forms
+  // This stores the JWT token and decodes it to get user information
   const handleAuthSuccess = async (token: string) => {
+    // Store the JWT token in cookies for persistence across browser sessions
+    // httpOnly would be more secure but makes client-side access harder
     Cookies.set(config.keys.access, token);
 
     await handleGetUser(token);
@@ -195,6 +216,8 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   };
 
+  // Authentication guard effect - controls access to protected routes
+  // This runs whenever the route changes to enforce authentication requirements
   useLayoutEffect(() => {
     setIsHandlingGlobalEffect(true);
 
@@ -206,6 +229,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       if (user.id) {
         handleLogout();
       } else {
+        // If user is not logged in and trying to access a protected route
         if (!isAllowed(location.pathname)) {
           const search =
             Object.values(location.search).length > 0
