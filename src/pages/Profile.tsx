@@ -31,13 +31,27 @@ import { useWrapperContext } from "../components/Wrapper";
 import { countries } from "../constants";
 import UserAvatar from "../components/UserAvatar";
 
+/**
+ * User Profile page component that allows users to view and edit their account information
+ * This component handles:
+ * - Displaying user profile information (name, bio, skills, etc.)
+ * - Editing profile data with form validation
+ * - Dynamic skills display based on user type (offered vs wanted)
+ * - Auto-resizing text areas for bio editing
+ * - Country selection and profile avatar display
+ */
 function Profile() {
+  // Check if current user is a tutor to show appropriate skill sections
   const { isTutor } = useWrapperContext();
 
+  // Global user state for profile data
   const [user, setUser] = useRecoilState(userState);
 
+  // Ref for auto-resizing textarea in bio section
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // Function to auto-resize textarea based on content
+  // This provides better UX for bio editing by expanding as user types
   const handleInput = () => {
     const textarea = textareaRef.current;
 
@@ -47,6 +61,8 @@ function Profile() {
     }
   };
 
+  // Memoized skills processing based on user type
+  // Tutors see "skills offered", Students see "skills wanted"
   const skills = useMemo(() => {
     if (user.type === UserType.Tutor) {
       return user.skillsOfferred;
