@@ -28,8 +28,10 @@ import { FiUserCheck } from "react-icons/fi";
 const Register = () => {
   const location = useLocation();
 
+  // Navigation hook for redirecting after successful registration
   const navigate = useNavigate();
 
+  // Get authentication context for managing login state after registration
   const { handleAuthSuccess, isLoggedIn } = useWrapperContext();
 
   const initialRole = useMemo(() => {
@@ -48,11 +50,14 @@ const Register = () => {
     return UserType[userType];
   }, [location.search]);
 
+  // State for user type selection - determines app functionality available to user
+  // Students can find tutors, Tutors can offer services and get matched with students
   const [role, setRole] = useState<UserType>(initialRole);
 
   const [agreed, setAgreed] = useState(false);
 
-  // Traditional Registration Form State
+  // State for traditional registration form
+  // Added this to support email/password registration alongside Google OAuth
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -61,16 +66,22 @@ const Register = () => {
     confirmPassword: ''
   });
 
+  // Apollo mutation hook for Google OAuth registration
+  // This was the original registration method before I added traditional auth
   const [createUser, createUserResult] = useMutation<
     SocialLoginResponse,
     SocialLoginInput
   >(CREATE_USER_SOCIAL);
 
+  // Apollo mutation hook for traditional email/password registration
+  // This is the new functionality implemented for traditional authentication
   const [createUserTraditional, createUserTraditionalResult] = useMutation<
     CreateUserResponse,
     { input: CreateUserInput }
   >(CREATE_USER_TRADITIONAL);
 
+  // Handles Google OAuth registration flow
+  // This creates a new account using Google credentials
   const handleCreateUser = async (input: SocialLoginInput["input"]) => {
     try {
       const response = await createUser({ variables: { input } });
@@ -89,11 +100,13 @@ const Register = () => {
     }
   };
 
-  // Traditional Registration Form Handler
+  // This handles the traditional email/password registration
+  // It creates a new account and automatically logs the user in
   const handleTraditionalRegister = async (e: React.FormEvent) => {
+    // Prevent default form submission to handle it with GraphQL
     e.preventDefault();
-    
-    // Validate passwords match
+
+    // Validate passwords match before sending to server
     if (formData.password !== formData.confirmPassword) {
       handleErrorMessage("Passwords do not match");
       return;
@@ -105,6 +118,7 @@ const Register = () => {
     }
 
     try {
+      // Call the GraphQL mutation to create a new user account
       const response = await createUserTraditional({
         variables: {
           input: {
@@ -117,6 +131,8 @@ const Register = () => {
       });
 
       if (response.data?.createUser?.accessToken) {
+        // Automatically log the user in after successful registration
+        // This provides a smooth user experience - no need to login again
         handleAuthSuccess(response.data.createUser.accessToken);
       }
     } catch (error) {
@@ -124,8 +140,11 @@ const Register = () => {
     }
   };
 
+  // Google OAuth configuration and registration trigger
+  // This integrates with Google's OAuth service for account creation
   const login = useGoogleLogin({
     onSuccess: async response => {
+      // When Google registration succeeds, create account with our backend
       await handleCreateUser({
         userType: role,
         type: SocialLoginType.Google,
@@ -134,13 +153,14 @@ const Register = () => {
     },
 
     onError: error => {
+      // Handle Google OAuth errors
       handleErrorMessage(error.error_description);
     },
   });
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bodyBg px-2">
-      {/* Already logged in banner */}
+      {/* Redirect already logged-in users to main app */}
       {isLoggedIn && (
         <div className="w-full mt-3 max-w-md bg-cardBg border border-mainWeak text-text rounded-2xl px-6 py-4 mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg z-20 text-center sm:text-left">
           <div className="flex items-center justify-center bg-mainWeak2 text-main rounded-full p-2">

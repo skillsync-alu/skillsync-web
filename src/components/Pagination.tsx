@@ -1,23 +1,37 @@
 import { useMemo } from "react";
 import { config } from "../config";
 
-// Define the props interface
+// Props interface for the Pagination component
 interface PaginationProps {
-  totalItems: number;
-  itemsPerPage: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-  siblingCount?: number;
-  brandColor?: string;
-  className?: string;
+  totalItems: number; // Total number of items across all pages
+  itemsPerPage: number; // Number of items to show per page
+  currentPage: number; // Currently active page (1-indexed)
+  onPageChange: (page: number) => void; // Callback when user selects a page
+  siblingCount?: number; // Number of sibling pages to show around current page
+  brandColor?: string; // Custom color for active page styling
+  className?: string; // Additional CSS classes
 }
 
-// Helper functions defined outside component
+// Utility function to generate a range of numbers
+// Used to create arrays of page numbers for pagination display
 const range = (start: number, end: number) => {
   const length = end - start + 1;
   return Array.from({ length }, (_, idx) => idx + start);
 };
 
+/**
+ * Pagination component for navigating through large datasets
+ * This component provides a user-friendly way to navigate through paginated content
+ * with smart page number truncation using dots when there are many pages
+ * 
+ * Features:
+ * - Smart truncation with dots for large page counts
+ * - Configurable sibling page count
+ * - Previous/Next navigation buttons
+ * - Responsive design considerations
+ * - Customizable styling with brand colors
+ * - Accessibility-friendly button interactions
+ */
 const Pagination = ({
   totalItems,
   itemsPerPage,
@@ -27,24 +41,25 @@ const Pagination = ({
   brandColor = config.colors.primary,
   className = "",
 }: PaginationProps) => {
-  // Calculate total pages - memoized to prevent recalculation
+  // Calculate total pages needed - memoized to prevent recalculation on re-renders
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // // If there's only 1 page, don't show pagination
+  // Uncomment to hide pagination when only 1 page exists
   // if (totalPages <= 1) return null;
 
-  // Generate pagination array with dots - memoized
+  // Generate the array of page numbers and dots - memoized for performance
+  // This creates the pagination display logic with smart truncation
   const pages = useMemo(() => {
-    // If total pages is 7 or less, show all pages
+    // If we have 7 or fewer pages, show all pages without truncation
     if (totalPages <= 7) {
       return range(1, totalPages);
     }
 
-    // Left side dots show
+    // Calculate the range of sibling pages around the current page
     const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
-    // Right side dots show
     const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
 
+    // Determine if we need to show dots on the left or right
     const shouldShowLeftDots = leftSiblingIndex > 2;
     const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
 

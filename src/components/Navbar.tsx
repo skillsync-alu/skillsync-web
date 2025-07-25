@@ -15,6 +15,8 @@ import UserAvatar from "./UserAvatar";
 import { UserType } from "../interfaces/user";
 import { useWrapperContext } from "./Wrapper";
 
+// Default navigation links available to all users
+// These core pages are accessible regardless of user type
 const defaultNavLinks = [
   {
     to: "/dashboard",
@@ -28,22 +30,38 @@ const defaultNavLinks = [
   },
 ];
 
+/**
+ * Main navigation component that appears at the top of all authenticated pages
+ * This component handles:
+ * - Responsive navigation with mobile menu
+ * - User-specific navigation based on account type (Student vs Tutor)
+ * - User profile dropdown with logout functionality
+ * - Dynamic active state highlighting for current page
+ */
 function Navbar() {
+  // Get current route to highlight active navigation item
   const { pathname } = useLocation();
 
+  // Navigation hook for programmatic routing
   const navigate = useNavigate();
 
+  // State for mobile menu visibility toggle
   const [showMoblieMenu, setShowMobileMenu] = useState(false);
 
+  // Get current user data from global state
   const [user] = useRecoilState(userState);
 
+  // Get logout function from authentication context
   const { handleLogout } = useWrapperContext();
 
+  // State for user profile dropdown menu
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Ref for dropdown menu to handle outside clicks
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on outside click
+  // Effect to close dropdown menu when clicking outside
+  // This provides better UX by automatically closing menus
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -60,9 +78,13 @@ function Navbar() {
     };
   }, [menuOpen]);
 
+  // Base CSS classes for navigation links
+  // These classes provide consistent styling across all navigation items
   const linkBaseClasses =
     "font-normal text-sm transition-colors flex items-center gap-2 py-4 px-2 max-lg:px-6 relative h-full max-lg:w-full h-[50px]";
 
+  // Dynamically generate navigation links based on user type
+  // Tutors get "Set Skills" page, Students get "Find Tutors" page
   const navLinks = useMemo(() => {
     if (user.type === UserType.Tutor) {
       return defaultNavLinks.concat({

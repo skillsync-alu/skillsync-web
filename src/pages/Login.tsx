@@ -22,60 +22,78 @@ import Spinner from "../components/Spinner";
 import { FiUserCheck } from "react-icons/fi";
 
 const Login = () => {
+  // Navigation hook for redirecting users after successful login
   const navigate = useNavigate();
 
+  // Get authentication context - this manages global login state
+  // handleAuthSuccess stores the token and updates user state across the app
   const { handleAuthSuccess, isLoggedIn } = useWrapperContext();
 
-  // State for form
+  // State for traditional login form - tracks email and password inputs
+  // I added this to support email/password login alongside Google OAuth
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  // Apollo mutation hook for Google OAuth login
+  // This connects to the existing social media login backend API
   const [loginUser, loginUserResult] = useMutation<
     SocialLoginResponse,
     SocialLoginInput
   >(LOGIN_USER_SOCIAL);
 
+  // Apollo mutation hook for traditional email/password login
+  // This is the new functionality implemented for traditional authentication
   const [loginTraditional, loginTraditionalResult] = useMutation<
     LoginUserResponse,
     { input: LoginUserInput }
   >(LOGIN_USER_TRADITIONAL);
 
+  // Handles Google OAuth login flow
+  // This was already working before I started - handles the social login
   const handleLoginUser = async (input: SocialLoginInput["input"]) => {
     try {
       const response = await loginUser({ variables: { input } });
 
+      // Check for GraphQL errors in the response
       if (response.errors) {
         return handleResponseErrors(response);
       }
 
+      // Ensure we got a valid access token back
       if (!response.data?.loginUserBySocialMedia) {
         return;
       }
 
+      // Store the token and redirect user to the main app
       handleAuthSuccess(response.data.loginUserBySocialMedia.accessToken);
     } catch (error) {
       handleErrorMessage(error);
     }
   };
 
-  // Form submission handler
+  // This handles the traditional email/password login
+  // It connects to the backend loginUser mutation and manages loading states
   const handleTraditionalLogin = async (e: React.FormEvent) => {
+    // Prevent default form submission to handle it with GraphQL
     e.preventDefault();
-    console.log("Form submitted with:", formData);
 
     try {
+      // Call the GraphQL mutation with user credentials
       const response = await loginTraditional({
         variables: {
           input: {
-            identifier: formData.email,
+            identifier: formData.email, // Backend accepts email or username
             password: formData.password,
           },
         },
       });
 
+      // Ensure we got valid tokens back from the server
       if (response.data?.loginUser?.accessToken) {
+        // Store the access token and redirect user to the main app
+        // The refresh token is automatically handled by Apollo/auth context
         handleAuthSuccess(response.data.loginUser.accessToken);
       }
     } catch (error) {
@@ -83,8 +101,11 @@ const Login = () => {
     }
   };
 
+  // Google OAuth configuration and login trigger
+  // This integrates with Google's OAuth service using the react-oauth library
   const login = useGoogleLogin({
     onSuccess: async response => {
+      // When Google login succeeds, pass the access token to our backend
       await handleLoginUser({
         type: SocialLoginType.Google,
         token: response.access_token,
@@ -98,7 +119,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bodyBg px-2 relative overflow-hidden">
-      {/* Already logged in banner */}
+      {/* Redirect logged-in users to main app */}
       {isLoggedIn && (
         <div className="w-full mt-3 max-w-md bg-cardBg border border-mainWeak text-text rounded-2xl px-6 py-4 mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 shadow-lg z-20 text-center sm:text-left">
           <div className="flex items-center justify-center bg-mainWeak2 text-main rounded-full p-2">
@@ -138,7 +159,8 @@ const Login = () => {
         <p className="text-sm text-textWeak mb-6 text-center">
           Log in to continue your learning journey with Skillsync
         </p>
-        {/* Google Button */}
+        {/* Google OAuth login button */}
+        {/* This was the original login method before traditional auth was added */}
         <button
           onClick={() => {
             if (loginUserResult.loading) {
@@ -158,7 +180,7 @@ const Login = () => {
         </button>
         {/* Divider */}
         <div className="w-full border-t border-lines my-6" />
-        {/* Email/Password Form: Update Form */}
+        {/* Traditional email/password login form */}
         <form
           onSubmit={handleTraditionalLogin}
           className="w-full flex flex-col gap-4"
