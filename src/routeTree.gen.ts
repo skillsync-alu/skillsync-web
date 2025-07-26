@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TutorsRouteImport } from './routes/tutors'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -23,6 +24,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TutorsRoute = TutorsRouteImport.update({
   id: '/tutors',
   path: '/tutors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SkillsRoute = SkillsRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/skills': typeof SkillsRoute
+  '/terms': typeof TermsRoute
   '/tutors': typeof TutorsRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/skills': typeof SkillsRoute
+  '/terms': typeof TermsRoute
   '/tutors': typeof TutorsRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/skills': typeof SkillsRoute
+  '/terms': typeof TermsRoute
   '/tutors': typeof TutorsRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/skills'
+    | '/terms'
     | '/tutors'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/skills'
+    | '/terms'
     | '/tutors'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/skills'
+    | '/terms'
     | '/tutors'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SkillsRoute: typeof SkillsRoute
+  TermsRoute: typeof TermsRoute
   TutorsRoute: typeof TutorsRoute
 }
 
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/tutors'
       fullPath: '/tutors'
       preLoaderRoute: typeof TutorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/skills': {
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SkillsRoute: SkillsRoute,
+  TermsRoute: TermsRoute,
   TutorsRoute: TutorsRoute,
 }
 export const routeTree = rootRouteImport

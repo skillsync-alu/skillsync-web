@@ -59,11 +59,11 @@ const Register = () => {
   // State for traditional registration form
   // Added this to support email/password registration alongside Google OAuth
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   // Apollo mutation hook for Google OAuth registration
@@ -125,9 +125,9 @@ const Register = () => {
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
-            password: formData.password
-          }
-        }
+            password: formData.password,
+          },
+        },
       });
 
       if (response.data?.createUser?.accessToken) {
@@ -245,12 +245,12 @@ const Register = () => {
             />
             <span>
               I agree to the{" "}
-              <a
-                href="#"
+              <Link
+                to="/terms"
                 className="underline text-main hover:text-main/80 transition-colors"
               >
                 Terms & Conditions
-              </a>
+              </Link>
             </span>
           </label>
         </div>
@@ -276,13 +276,18 @@ const Register = () => {
         {/* Divider */}
         <div className="w-full border-t border-lines my-6" />
         {/* Email/Password Form */}
-        <form onSubmit={handleTraditionalRegister} className="w-full flex flex-col gap-4">
+        <form
+          onSubmit={handleTraditionalRegister}
+          className="w-full flex flex-col gap-4"
+        >
           <div className="flex gap-4">
             <input
               type="text"
               placeholder="First name"
               value={formData.firstName}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, firstName: e.target.value }))
+              }
               className="w-1/2 px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
               required
             />
@@ -290,7 +295,9 @@ const Register = () => {
               type="text"
               placeholder="Last name"
               value={formData.lastName}
-              onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, lastName: e.target.value }))
+              }
               className="w-1/2 px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
               required
             />
@@ -299,7 +306,9 @@ const Register = () => {
             type="email"
             placeholder="Email address"
             value={formData.email}
-            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, email: e.target.value }))
+            }
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
             required
           />
@@ -307,7 +316,9 @@ const Register = () => {
             type="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({ ...prev, password: e.target.value }))
+            }
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
             required
           />
@@ -315,7 +326,12 @@ const Register = () => {
             type="password"
             placeholder="Confirm password"
             value={formData.confirmPassword}
-            onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+            onChange={e =>
+              setFormData(prev => ({
+                ...prev,
+                confirmPassword: e.target.value,
+              }))
+            }
             className="w-full px-4 py-3 rounded-xl border border-lines bg-cardBgWeak text-text focus:outline-none focus:ring-2 focus:ring-main transition-all"
             required
           />
