@@ -50,8 +50,8 @@ export const WrapperContext = createContext<{
   isTutor: false,
   isLoggedIn: false,
   userCountry: "RW",
-  handleLogout: () => { },
-  handleAuthSuccess: async () => { },
+  handleLogout: () => {},
+  handleAuthSuccess: async () => {},
   handleGetUser: async () => defaultUser,
 });
 
@@ -67,6 +67,7 @@ const paths = [
   "/forgot-password", // Password reset request page - added this during auth implementation
   "/reset-password", // Password reset completion page - I added this during auth implementation
   "/404", // Not found page
+  "/terms", // Terms & Conditions Page
 ];
 
 const allowedPaths = ["/"].concat(paths);

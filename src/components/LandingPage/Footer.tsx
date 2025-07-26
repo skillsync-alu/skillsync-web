@@ -31,6 +31,7 @@ function Footer() {
                 { label: "Mission", path: "#mission" },
                 { label: "Find Tutors", path: "#tutors" },
                 { label: "FAQs", path: "#faq" },
+                { label: "Terms & Conditions", path: "/terms" },
               ].map((link, index) => (
                 <Link to={link.path} key={index} className="text-white ">
                   {link.label}
